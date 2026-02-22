@@ -3,9 +3,11 @@ import { useStore } from '../store/useStore';
 import { useShallow } from 'zustand/react/shallow';
 import { BabyFaceIcon, ChartIcon, CalendarIcon, ProfileIcon, StarIcon, ChecklistIcon, OllieBadge } from './Icons';
 import { formatBabyAge, getDailyTip } from '../utils/helpers';
+import { APP_VERSION } from '../version';
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { activePage, setActivePage, getActiveBaby } = useStore(useShallow((s) => ({ activePage: s.activePage, setActivePage: s.setActivePage, getActiveBaby: s.getActiveBaby })));
+  const { activePage, setActivePage, getActiveBaby, profiles, activeBabyId } = useStore(useShallow((s) => ({ activePage: s.activePage, setActivePage: s.setActivePage, getActiveBaby: s.getActiveBaby, profiles: s.profiles, activeBabyId: s.activeBabyId })));
+  void profiles; void activeBabyId; // subscribed so Layout re-renders on profile/theme changes
   const baby = getActiveBaby();
   const theme = baby?.theme || 'default';
 
@@ -47,6 +49,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               </p>
             </div>
           </div>
+          <span className="text-[10px] text-warm-gray/50 font-mono font-medium">v{APP_VERSION}</span>
         </div>
       </header>
 
