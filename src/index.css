@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #FFF8F0;
+  --color-cream-dark: #FFF0E0;
+  --color-blush: #FFD6E0;
+  --color-blush-dark: #FFB8CC;
+  --color-lavender: #E8D5F5;
+  --color-lavender-dark: #D4B8EB;
+  --color-peach: #FFE0CC;
+  --color-peach-dark: #FFCBA8;
+  --color-mint: #D4F0E7;
+  --color-mint-dark: #B3E5D5;
+  --color-sky: #D6ECFA;
+  --color-sky-dark: #B8DCF5;
+  --color-sunshine: #FFF3CC;
+  --color-sunshine-dark: #FFE899;
+  --color-warm-brown: #5D4037;
+  --color-warm-brown-light: #8D6E63;
+  --color-warm-gray: #A1887F;
+  --color-rose: #F48FB1;
+  --color-rose-dark: #EC407A;
+
+  --font-family-sans: 'Nunito', sans-serif;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background-color: #FFF8F0;
+  color: #5D4037;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FFD6E0;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FFB8CC;
+}
