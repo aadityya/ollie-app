@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useStore } from '../store/useStore';
+import { useShallow } from 'zustand/react/shallow';
 import { formatTime } from '../utils/helpers';
 
 export function NotesSection() {
-  const { getDay, selectedDate, addNote, removeNote } = useStore();
+  const { getDay, selectedDate, addNote, removeNote } = useStore(useShallow((s) => ({ getDay: s.getDay, selectedDate: s.selectedDate, addNote: s.addNote, removeNote: s.removeNote })));
   const day = getDay(selectedDate);
   const [text, setText] = useState('');
 

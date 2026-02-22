@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { useStore } from '../store/useStore';
-import { BabyFaceIcon, ChartIcon, CalendarIcon, ProfileIcon, BoyIcon, GirlIcon, StarIcon, ChecklistIcon } from './Icons';
+import { useShallow } from 'zustand/react/shallow';
+import { BabyFaceIcon, ChartIcon, CalendarIcon, ProfileIcon, StarIcon, ChecklistIcon, OllieBadge } from './Icons';
 import { formatBabyAge, getDailyTip } from '../utils/helpers';
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { activePage, setActivePage, getActiveBaby } = useStore();
+  const { activePage, setActivePage, getActiveBaby } = useStore(useShallow((s) => ({ activePage: s.activePage, setActivePage: s.setActivePage, getActiveBaby: s.getActiveBaby })));
   const baby = getActiveBaby();
   const theme = baby?.theme || 'default';
 
@@ -25,12 +26,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-blush/30 px-4 py-3 sticky top-0 z-10">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {baby ? (
-              baby.gender === 'boy' ? <BoyIcon size={36} /> : <GirlIcon size={36} />
-            ) : (
-              <BabyFaceIcon size={36} />
-            )}
+          <div className="flex items-center gap-2.5">
+            <OllieBadge size={40} />
             <div>
               <h1 className="text-lg font-bold text-warm-brown leading-tight">
                 {baby ? `${baby.name}'s Day` : 'Ollie'}
@@ -43,7 +40,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   </>
                 ) : (
                   <>
-                    Add a baby to get started
+                    Baby Wellness Tracker
                     <StarIcon size={10} className="inline-block ml-1 -mt-0.5" />
                   </>
                 )}

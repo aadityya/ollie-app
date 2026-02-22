@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useStore } from '../store/useStore';
+import { useShallow } from 'zustand/react/shallow';
 import { MoonIcon } from './Icons';
 
 interface SleepModalProps {
@@ -8,7 +9,7 @@ interface SleepModalProps {
 }
 
 export function SleepModal({ open, onClose }: SleepModalProps) {
-  const { addSleep, endSleep, getDay, selectedDate } = useStore();
+  const { addSleep, endSleep, getDay, selectedDate } = useStore(useShallow((s) => ({ addSleep: s.addSleep, endSleep: s.endSleep, getDay: s.getDay, selectedDate: s.selectedDate })));
   const day = getDay(selectedDate);
   const activeSleep = day.sleeps.find((s) => !s.endTime);
 

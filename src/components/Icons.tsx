@@ -300,6 +300,41 @@ export function ChecklistIcon({ size = 32, className = '' }: IconProps) {
   );
 }
 
+export function OllieBadge({ size = 40, className = '' }: IconProps) {
+  return (
+    <div
+      className={className}
+      style={{
+        width: size,
+        height: size,
+        borderRadius: '50%',
+        background: 'linear-gradient(135deg, #FFF8F0, #FFE8EF)',
+        border: '2px solid #FFD6E0',
+        display: 'flex',
+        flexDirection: 'column' as const,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+      }}
+    >
+      <BabyFaceIcon size={size * 0.55} />
+      <span
+        style={{
+          fontSize: size * 0.15,
+          fontWeight: 900,
+          color: '#5D4037',
+          letterSpacing: 1.5,
+          textTransform: 'uppercase' as const,
+          marginTop: -1,
+          lineHeight: 1,
+        }}
+      >
+        Ollie
+      </span>
+    </div>
+  );
+}
+
 export function StarIcon({ size = 16, className = '' }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" className={className} fill="none">

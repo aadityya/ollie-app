@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { format, parseISO, isPast, isToday } from 'date-fns';
 import { useStore } from '../store/useStore';
+import { useShallow } from 'zustand/react/shallow';
 import { CalendarIcon } from './Icons';
 
 export function AppointmentsPage() {
-  const { appointments, activeBabyId, addAppointment, removeAppointment, toggleAppointmentComplete, getActiveBaby } = useStore();
+  const { appointments, activeBabyId, addAppointment, removeAppointment, toggleAppointmentComplete, getActiveBaby } = useStore(useShallow((s) => ({ appointments: s.appointments, activeBabyId: s.activeBabyId, addAppointment: s.addAppointment, removeAppointment: s.removeAppointment, toggleAppointmentComplete: s.toggleAppointmentComplete, getActiveBaby: s.getActiveBaby })));
   const baby = getActiveBaby();
   const babyAppts = activeBabyId ? (appointments[activeBabyId] || []) : [];
 

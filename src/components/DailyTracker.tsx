@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useStore } from '../store/useStore';
+import { useShallow } from 'zustand/react/shallow';
 import { DateSelector } from './DateSelector';
 import { QuickLogButton } from './QuickLogButton';
 import { FeedingModal } from './FeedingModal';
@@ -11,7 +12,7 @@ import { NotesSection } from './NotesSection';
 import { DropletIcon, PoopIcon, BreastFeedIcon, DiaperIcon, MoonIcon, ColicIcon } from './Icons';
 
 export function DailyTracker() {
-  const { addPee, addPoop, getDay, selectedDate, getActiveBaby } = useStore();
+  const { addPee, addPoop, getDay, selectedDate, getActiveBaby } = useStore(useShallow((s) => ({ addPee: s.addPee, addPoop: s.addPoop, getDay: s.getDay, selectedDate: s.selectedDate, getActiveBaby: s.getActiveBaby })));
   const baby = getActiveBaby();
   const day = getDay(selectedDate);
 

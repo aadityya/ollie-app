@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { useStore } from '../store/useStore';
+import { useShallow } from 'zustand/react/shallow';
 import { BoyIcon, GirlIcon } from './Icons';
 import { formatBabyAge, DEFAULT_CHECKLIST_ITEMS } from '../utils/helpers';
 import type { BabyGender, ThemeName } from '../types';
@@ -15,7 +16,7 @@ const THEMES: { name: ThemeName; label: string; swatch: string; border: string }
 ];
 
 export function ProfilePage() {
-  const { profiles, activeBabyId, addProfile, updateProfile, removeProfile, setActiveBaby, getActiveBaby } = useStore();
+  const { profiles, activeBabyId, addProfile, updateProfile, removeProfile, setActiveBaby, getActiveBaby } = useStore(useShallow((s) => ({ profiles: s.profiles, activeBabyId: s.activeBabyId, addProfile: s.addProfile, updateProfile: s.updateProfile, removeProfile: s.removeProfile, setActiveBaby: s.setActiveBaby, getActiveBaby: s.getActiveBaby })));
   const activeBaby = getActiveBaby();
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ollie Banner Previews</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Nunito', sans-serif; background: #f0ebe3; padding: 40px 20px; color: #5D4037; }
+  h2 { text-align: center; margin: 50px 0 20px; font-size: 14px; text-transform: uppercase; letter-spacing: 3px; color: #A1887F; }
+  h2:first-of-type { margin-top: 10px; }
+  .preview-wrap { max-width: 900px; margin: 0 auto 30px; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 30px rgba(93,64,55,0.10); }
+
+  /* ─── BANNER A: Notion Cover Style ─── */
+  .banner-a {
+    background: linear-gradient(135deg, #FFF8F0 0%, #FFE8EF 50%, #FFF0E0 100%);
+    padding: 60px 50px;
+    position: relative;
+    overflow: hidden;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .banner-a .floating-icons {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .banner-a .floating-icons span {
+    position: absolute;
+    font-size: 28px;
+    opacity: 0.18;
+  }
+  .banner-a .fi-1 { top: 12%; left: 8%; font-size: 32px; opacity: 0.15; }
+  .banner-a .fi-2 { top: 18%; right: 12%; font-size: 26px; opacity: 0.14; }
+  .banner-a .fi-3 { bottom: 20%; left: 15%; font-size: 24px; opacity: 0.16; }
+  .banner-a .fi-4 { bottom: 15%; right: 8%; font-size: 30px; opacity: 0.13; }
+  .banner-a .fi-5 { top: 45%; left: 4%; font-size: 22px; opacity: 0.12; }
+  .banner-a .fi-6 { top: 40%; right: 5%; font-size: 26px; opacity: 0.14; }
+  .banner-a .fi-7 { top: 8%; left: 40%; font-size: 20px; opacity: 0.11; }
+  .banner-a .fi-8 { bottom: 8%; left: 45%; font-size: 22px; opacity: 0.12; }
+  .banner-a .fi-9 { top: 60%; left: 25%; font-size: 18px; opacity: 0.10; }
+  .banner-a .fi-10 { top: 25%; right: 30%; font-size: 20px; opacity: 0.11; }
+
+  .banner-a .logo-area {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  .banner-a .logo-icon {
+    width: 72px; height: 72px;
+    background: white;
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    box-shadow: 0 4px 20px rgba(244,143,177,0.2);
+  }
+  .banner-a .logo-text {
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: 8px;
+    color: #5D4037;
+    text-transform: uppercase;
+  }
+  .banner-a .logo-sub {
+    font-size: 13px;
+    color: #A1887F;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .banner-a .tagline {
+    margin-top: 28px;
+    font-size: 15px;
+    color: #8D6E63;
+    font-weight: 600;
+    position: relative;
+    z-index: 2;
+  }
+  .banner-a .dot-divider {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 20px;
+    position: relative;
+    z-index: 2;
+  }
+  .banner-a .dot-divider span {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: #FFB8CC;
+  }
+
+  /* ─── BANNER B: Icon Strip Style ─── */
+  .banner-b {
+    background: #FFF8F0;
+    position: relative;
+    overflow: hidden;
+  }
+  .banner-b .icon-strip {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 28px 30px 0;
+  }
+  .banner-b .icon-pill {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+  .banner-b .ip-1 { background: #D6ECFA; }
+  .banner-b .ip-2 { background: #FFE0CC; }
+  .banner-b .ip-3 { background: #FFD6E0; }
+  .banner-b .ip-4 { background: #E8D5F5; }
+  .banner-b .ip-5 { background: #D4F0E7; }
+  .banner-b .ip-6 { background: #FFF3CC; }
+  .banner-b .ip-7 { background: #D6ECFA; }
+
+  .banner-b .content-area {
+    text-align: center;
+    padding: 30px 50px 40px;
+  }
+  .banner-b .logo-mark {
+    font-size: 48px;
+    font-weight: 900;
+    color: #5D4037;
+    letter-spacing: 6px;
+  }
+  .banner-b .logo-mark .dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #F48FB1;
+    margin-left: 2px;
+    vertical-align: super;
+    position: relative;
+    top: -8px;
+  }
+  .banner-b .subtitle {
+    font-size: 12px;
+    color: #A1887F;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .banner-b .divider-line {
+    width: 40px;
+    height: 2px;
+    background: #FFD6E0;
+    margin: 20px auto;
+    border-radius: 1px;
+  }
+  .banner-b .tagline {
+    font-size: 15px;
+    color: #8D6E63;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  /* ─── BANNER C: Wide Minimal ─── */
+  .banner-c {
+    background: linear-gradient(180deg, #FFFFFF 0%, #FFF8F0 100%);
+    padding: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
+  }
+  .banner-c .left {
+    flex: 1;
+  }
+  .banner-c .left .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+  .banner-c .left .logo-circle {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FFD6E0, #E8D5F5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .banner-c .left .logo-name {
+    font-size: 36px;
+    font-weight: 900;
+    color: #5D4037;
+    letter-spacing: 3px;
+  }
+  .banner-c .left .tagline {
+    font-size: 15px;
+    color: #8D6E63;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .banner-c .left .feature-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .banner-c .left .feature-tags span {
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: #FFF0E0;
+    color: #8D6E63;
+    font-weight: 700;
+  }
+  .banner-c .right {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .banner-c .right .icon-card {
+    width: 64px; height: 64px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    gap: 2px;
+  }
+  .banner-c .right .icon-card .lbl {
+    font-size: 8px;
+    font-weight: 700;
+    color: #A1887F;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .banner-c .ic-1 { background: #D6ECFA; }
+  .banner-c .ic-2 { background: #FFE0CC; }
+  .banner-c .ic-3 { background: #FFD6E0; }
+  .banner-c .ic-4 { background: #E8D5F5; }
+  .banner-c .ic-5 { background: #D4F0E7; }
+  .banner-c .ic-6 { background: #FFF3CC; }
+
+  /* ─── LOGO OPTIONS ─── */
+  .logos-row {
+    max-width: 900px;
+    margin: 0 auto 30px;
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+  }
+  .logo-opt {
+    background: white;
+    border-radius: 20px;
+    padding: 30px 40px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(93,64,55,0.08);
+    flex: 1;
+    max-width: 280px;
+  }
+  .logo-opt .label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #A1887F;
+    margin-bottom: 16px;
+  }
+
+  /* Logo A: Icon + Text */
+  .logo-a-icon {
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #FFD6E0, #E8D5F5);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 10px;
+    font-size: 28px;
+  }
+  .logo-a-text {
+    font-size: 28px;
+    font-weight: 900;
+    color: #5D4037;
+    letter-spacing: 5px;
+  }
+
+  /* Logo B: Circle badge */
+  .logo-b-circle {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FFF8F0, #FFE8EF);
+    border: 3px solid #FFD6E0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+  }
+  .logo-b-circle .emoji { font-size: 28px; margin-bottom: -2px; }
+  .logo-b-circle .name {
+    font-size: 10px;
+    font-weight: 900;
+    color: #5D4037;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .logo-b-text {
+    font-size: 24px;
+    font-weight: 900;
+    color: #5D4037;
+    letter-spacing: 4px;
+  }
+  .logo-b-sub {
+    font-size: 9px;
+    color: #A1887F;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  /* Logo C: Pill shape */
+  .logo-c-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #5D4037;
+    border-radius: 50px;
+    padding: 10px 24px 10px 12px;
+    margin: 0 auto 10px;
+  }
+  .logo-c-pill .dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: #FFD6E0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .logo-c-pill .name {
+    font-size: 20px;
+    font-weight: 900;
+    color: white;
+    letter-spacing: 4px;
+  }
+  .logo-c-sub {
+    font-size: 9px;
+    color: #A1887F;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+
+<h2>Banner Concept A — Floating Icons</h2>
+<div class="preview-wrap">
+  <div class="banner-a">
+    <div class="floating-icons">
+      <span class="fi-1">🍼</span>
+      <span class="fi-2">🧸</span>
+      <span class="fi-3">🌙</span>
+      <span class="fi-4">💧</span>
+      <span class="fi-5">🧷</span>
+      <span class="fi-6">🤱</span>
+      <span class="fi-7">⭐</span>
+      <span class="fi-8">🎵</span>
+      <span class="fi-9">💤</span>
+      <span class="fi-10">🛁</span>
+    </div>
+    <div class="logo-area">
+      <div class="logo-icon">
+        <svg width="40" height="40" viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="34" r="24" fill="#FFE0CC"/>
+          <path d="M26 12 C28 8, 36 8, 38 12 C36 10, 28 10, 26 12Z" fill="#8D6E63"/>
+          <path d="M22 14 C24 9, 30 7, 32 10" stroke="#8D6E63" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M32 10 C34 7, 40 9, 42 14" stroke="#8D6E63" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <circle cx="24" cy="34" r="3" fill="#5D4037"/>
+          <circle cx="40" cy="34" r="3" fill="#5D4037"/>
+          <circle cx="25" cy="33" r="1" fill="white"/>
+          <circle cx="41" cy="33" r="1" fill="white"/>
+          <circle cx="18" cy="40" r="4" fill="#FFB8CC" opacity="0.5"/>
+          <circle cx="46" cy="40" r="4" fill="#FFB8CC" opacity="0.5"/>
+          <path d="M26 42 Q32 48 38 42" stroke="#5D4037" stroke-width="2" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <div class="logo-text">OLLIE</div>
+      <div class="logo-sub">Baby Wellness Tracker</div>
+    </div>
+    <div class="tagline">Your baby's wellness, beautifully tracked.</div>
+    <div class="dot-divider"><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+</div>
+
+<h2>Banner Concept B — Icon Strip</h2>
+<div class="preview-wrap">
+  <div class="banner-b">
+    <div class="icon-strip">
+      <div class="icon-pill ip-1">💧</div>
+      <div class="icon-pill ip-2">💩</div>
+      <div class="icon-pill ip-3">🤱</div>
+      <div class="icon-pill ip-4">👶</div>
+      <div class="icon-pill ip-5">🌙</div>
+      <div class="icon-pill ip-6">📊</div>
+      <div class="icon-pill ip-7">📝</div>
+    </div>
+    <div class="content-area">
+      <div class="logo-mark">ollie<span class="dot"></span></div>
+      <div class="subtitle">Baby Wellness Tracker</div>
+      <div class="divider-line"></div>
+      <div class="tagline">Every little moment matters — thank you for choosing Ollie.</div>
+    </div>
+  </div>
+</div>
+
+<h2>Banner Concept C — Split Layout</h2>
+<div class="preview-wrap">
+  <div class="banner-c">
+    <div class="left">
+      <div class="logo-row">
+        <div class="logo-circle">👶</div>
+        <div class="logo-name">Ollie</div>
+      </div>
+      <div class="tagline">Thank you for welcoming Ollie into your parenting journey.</div>
+      <div class="feature-tags">
+        <span>🍼 Feeding</span>
+        <span>💤 Sleep</span>
+        <span>📊 Insights</span>
+        <span>✅ Checklist</span>
+        <span>📅 Appts</span>
+      </div>
+    </div>
+    <div class="right">
+      <div class="icon-card ic-1">💧<span class="lbl">Pee</span></div>
+      <div class="icon-card ic-2">💩<span class="lbl">Poop</span></div>
+      <div class="icon-card ic-3">🤱<span class="lbl">Feed</span></div>
+      <div class="icon-card ic-4">👶<span class="lbl">Diaper</span></div>
+      <div class="icon-card ic-5">🌙<span class="lbl">Sleep</span></div>
+      <div class="icon-card ic-6">😣<span class="lbl">Colic</span></div>
+    </div>
+  </div>
+</div>
+
+<h2>Logo Options</h2>
+<div class="logos-row">
+  <div class="logo-opt">
+    <div class="label">Logo A — App Icon</div>
+    <div class="logo-a-icon">👶</div>
+    <div class="logo-a-text">OLLIE</div>
+  </div>
+  <div class="logo-opt">
+    <div class="label">Logo B — Badge</div>
+    <div class="logo-b-circle">
+      <span class="emoji">👶</span>
+      <span class="name">Ollie</span>
+    </div>
+    <div class="logo-b-text">ollie</div>
+    <div class="logo-b-sub">wellness tracker</div>
+  </div>
+  <div class="logo-opt">
+    <div class="label">Logo C — Pill</div>
+    <div class="logo-c-pill">
+      <span class="dot">👶</span>
+      <span class="name">ollie</span>
+    </div>
+    <div class="logo-c-sub">baby wellness tracker</div>
+  </div>
+</div>
+
+</body>
+</html>

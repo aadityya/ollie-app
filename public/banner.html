@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ollie — Baby Wellness Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #FFF8F0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+    color: #5D4037;
+  }
+
+  /* ─── Banner ─── */
+  .banner {
+    background: linear-gradient(180deg, #FFFFFF 0%, #FFF8F0 100%);
+    border-radius: 24px;
+    padding: 56px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+    max-width: 960px;
+    width: 100%;
+    box-shadow: 0 8px 40px rgba(93,64,55,0.08);
+    border: 1px solid rgba(255,214,224,0.3);
+  }
+
+  .left { flex: 1; }
+
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  /* Logo B badge style */
+  .logo-badge {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FFF8F0, #FFE8EF);
+    border: 2.5px solid #FFD6E0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-badge svg {
+    margin-bottom: -2px;
+  }
+  .logo-badge .badge-name {
+    font-size: 7px;
+    font-weight: 900;
+    color: #5D4037;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: -1px;
+  }
+
+  .logo-name {
+    font-size: 40px;
+    font-weight: 900;
+    color: #5D4037;
+    letter-spacing: 4px;
+  }
+
+  .tagline {
+    font-size: 16px;
+    color: #8D6E63;
+    font-weight: 600;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  .feature-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .feature-tags span {
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: #FFF0E0;
+    color: #8D6E63;
+    font-weight: 700;
+    transition: background 0.2s;
+  }
+
+  .right {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .icon-card {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    transition: transform 0.2s;
+  }
+  .icon-card:hover { transform: scale(1.05); }
+  .icon-card svg { width: 30px; height: 30px; }
+  .icon-card .lbl {
+    font-size: 8px;
+    font-weight: 800;
+    color: #8D6E63;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .ic-pee     { background: #D6ECFA; }
+  .ic-poop    { background: #FFE0CC; }
+  .ic-feed    { background: #FFD6E0; }
+  .ic-diaper  { background: #E8D5F5; }
+  .ic-sleep   { background: #D4F0E7; }
+  .ic-colic   { background: #FFF3CC; }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 700px) {
+    .banner {
+      flex-direction: column;
+      padding: 40px 30px;
+      gap: 36px;
+      text-align: center;
+    }
+    .logo-row { justify-content: center; }
+    .feature-tags { justify-content: center; }
+    .right { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <div class="left">
+    <div class="logo-row">
+      <div class="logo-badge">
+        <!-- Inline baby face SVG instead of emoji for consistency -->
+        <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="34" r="24" fill="#FFE0CC"/>
+          <path d="M26 12 C28 8, 36 8, 38 12 C36 10, 28 10, 26 12Z" fill="#8D6E63"/>
+          <path d="M22 14 C24 9, 30 7, 32 10" stroke="#8D6E63" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M32 10 C34 7, 40 9, 42 14" stroke="#8D6E63" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <circle cx="24" cy="34" r="3" fill="#5D4037"/>
+          <circle cx="40" cy="34" r="3" fill="#5D4037"/>
+          <circle cx="25" cy="33" r="1" fill="white"/>
+          <circle cx="41" cy="33" r="1" fill="white"/>
+          <circle cx="18" cy="40" r="4" fill="#FFB8CC" opacity="0.5"/>
+          <circle cx="46" cy="40" r="4" fill="#FFB8CC" opacity="0.5"/>
+          <path d="M26 42 Q32 48 38 42" stroke="#5D4037" stroke-width="2" stroke-linecap="round" fill="none"/>
+        </svg>
+        <span class="badge-name">Ollie</span>
+      </div>
+      <div class="logo-name">Ollie</div>
+    </div>
+    <div class="tagline">Thank you for welcoming Ollie into your parenting journey.</div>
+    <div class="feature-tags">
+      <span>&#x1F37C; Feeding</span>
+      <span>&#x1F4A4; Sleep</span>
+      <span>&#x1F4CA; Insights</span>
+      <span>&#x2705; Checklist</span>
+      <span>&#x1F4C5; Appts</span>
+    </div>
+  </div>
+
+  <div class="right">
+    <!-- Pee -->
+    <div class="icon-card ic-pee">
+      <svg viewBox="0 0 64 64" fill="none">
+        <path d="M32 8 C32 8, 12 32, 12 42 C12 53 21 58 32 58 C43 58 52 53 52 42 C52 32 32 8 32 8Z" fill="#B8DCF5" stroke="#90CAF9" stroke-width="2"/>
+        <ellipse cx="24" cy="40" rx="4" ry="6" fill="white" opacity="0.4"/>
+      </svg>
+      <span class="lbl">Pee</span>
+    </div>
+    <!-- Poop -->
+    <div class="icon-card ic-poop">
+      <svg viewBox="0 0 64 64" fill="none">
+        <path d="M20 54 C14 54, 10 48, 14 44 C10 42, 12 36, 18 36 C16 32, 20 28, 26 30 C24 24, 28 20, 34 22 C32 16, 38 14, 42 20 C46 18, 50 22, 48 28 C52 30, 54 36, 48 38 C54 42, 52 50, 44 54Z" fill="#A1887F" stroke="#8D6E63" stroke-width="1.5"/>
+        <circle cx="28" cy="40" r="2.5" fill="#5D4037"/>
+        <circle cx="40" cy="40" r="2.5" fill="#5D4037"/>
+        <circle cx="29" cy="39" r="0.8" fill="white"/>
+        <circle cx="41" cy="39" r="0.8" fill="white"/>
+        <path d="M30 46 Q34 50 38 46" stroke="#5D4037" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      </svg>
+      <span class="lbl">Poop</span>
+    </div>
+    <!-- Feed -->
+    <div class="icon-card ic-feed">
+      <svg viewBox="0 0 64 64" fill="none">
+        <circle cx="32" cy="20" r="10" fill="#FFE0CC"/>
+        <path d="M22 28 C18 34, 16 42, 20 50 L44 50 C48 42, 46 34, 42 28Z" fill="#FFD6E0"/>
+        <ellipse cx="34" cy="44" rx="10" ry="7" fill="#E8D5F5"/>
+        <circle cx="38" cy="42" r="4" fill="#FFE0CC"/>
+        <path d="M28 32 C26 28, 20 28, 20 33 C20 38, 28 42, 28 42 C28 42, 36 38, 36 33 C36 28, 30 28, 28 32Z" fill="#F48FB1" opacity="0.6"/>
+      </svg>
+      <span class="lbl">Feed</span>
+    </div>
+    <!-- Diaper -->
+    <div class="icon-card ic-diaper">
+      <svg viewBox="0 0 64 64" fill="none">
+        <path d="M14 20 L14 36 C14 48, 50 48, 50 36 L50 20 C44 24, 36 26, 32 26 C28 26, 20 24, 14 20Z" fill="white" stroke="#B8DCF5" stroke-width="2"/>
+        <rect x="10" y="18" width="10" height="6" rx="2" fill="#B8DCF5"/>
+        <rect x="44" y="18" width="10" height="6" rx="2" fill="#B8DCF5"/>
+        <circle cx="26" cy="34" r="2" fill="#FFD6E0" opacity="0.6"/>
+        <circle cx="32" cy="36" r="2" fill="#E8D5F5" opacity="0.6"/>
+        <circle cx="38" cy="34" r="2" fill="#D6ECFA" opacity="0.6"/>
+      </svg>
+      <span class="lbl">Diaper</span>
+    </div>
+    <!-- Sleep -->
+    <div class="icon-card ic-sleep">
+      <svg viewBox="0 0 64 64" fill="none">
+        <path d="M40 12 C28 16, 22 28, 26 42 C30 54, 44 58, 54 50 C42 54, 32 46, 30 34 C28 22, 34 14, 40 12Z" fill="#FFE899" stroke="#FFD54F" stroke-width="1.5"/>
+        <circle cx="18" cy="18" r="2" fill="#FFE899"/>
+        <circle cx="14" cy="30" r="1.5" fill="#FFE899" opacity="0.7"/>
+        <circle cx="48" cy="22" r="1.5" fill="#FFE899" opacity="0.7"/>
+      </svg>
+      <span class="lbl">Sleep</span>
+    </div>
+    <!-- Colic -->
+    <div class="icon-card ic-colic">
+      <svg viewBox="0 0 64 64" fill="none">
+        <circle cx="32" cy="34" r="24" fill="#FFE0CC"/>
+        <path d="M18 26 L26 30" stroke="#8D6E63" stroke-width="2" stroke-linecap="round"/>
+        <path d="M46 26 L38 30" stroke="#8D6E63" stroke-width="2" stroke-linecap="round"/>
+        <path d="M22 34 Q25 32 28 34" stroke="#5D4037" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <path d="M36 34 Q39 32 42 34" stroke="#5D4037" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <ellipse cx="32" cy="46" rx="6" ry="4" fill="#E57373" opacity="0.7"/>
+        <circle cx="18" cy="40" r="4" fill="#FF8A80" opacity="0.35"/>
+        <circle cx="46" cy="40" r="4" fill="#FF8A80" opacity="0.35"/>
+      </svg>
+      <span class="lbl">Colic</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

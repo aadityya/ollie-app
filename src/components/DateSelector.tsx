@@ -1,8 +1,9 @@
 import { format, addDays, subDays, isToday, parseISO } from 'date-fns';
 import { useStore } from '../store/useStore';
+import { useShallow } from 'zustand/react/shallow';
 
 export function DateSelector() {
-  const { selectedDate, setSelectedDate } = useStore();
+  const { selectedDate, setSelectedDate } = useStore(useShallow((s) => ({ selectedDate: s.selectedDate, setSelectedDate: s.setSelectedDate })));
   const date = parseISO(selectedDate);
 
   const goBack = () => setSelectedDate(format(subDays(date, 1), 'yyyy-MM-dd'));

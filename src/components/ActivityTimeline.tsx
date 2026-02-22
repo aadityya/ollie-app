@@ -1,4 +1,5 @@
 import { useStore } from '../store/useStore';
+import { useShallow } from 'zustand/react/shallow';
 import { formatTime, formatDuration } from '../utils/helpers';
 import { DropletIcon, PoopIcon, BreastFeedIcon, DiaperIcon, MoonIcon, ColicIcon } from './Icons';
 
@@ -12,7 +13,7 @@ interface TimelineEntry {
 }
 
 export function ActivityTimeline() {
-  const { getDay, selectedDate, removePee, removePoop, removeFeeding, removeDiaperChange, removeSleep, removeColic } = useStore();
+  const { getDay, selectedDate, removePee, removePoop, removeFeeding, removeDiaperChange, removeSleep, removeColic } = useStore(useShallow((s) => ({ getDay: s.getDay, selectedDate: s.selectedDate, removePee: s.removePee, removePoop: s.removePoop, removeFeeding: s.removeFeeding, removeDiaperChange: s.removeDiaperChange, removeSleep: s.removeSleep, removeColic: s.removeColic })));
   const day = getDay(selectedDate);
 
   const entries: TimelineEntry[] = [

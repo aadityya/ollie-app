@@ -1,4 +1,5 @@
 import { useStore } from '../store/useStore';
+import { useShallow } from 'zustand/react/shallow';
 import { DateSelector } from './DateSelector';
 
 const activityEmojis: Record<string, string> = {
@@ -16,7 +17,7 @@ function getEmoji(item: string): string {
 }
 
 export function ChecklistPage() {
-  const { getActiveBaby, getChecklistItems, getCompletedItems, toggleCheckItem, selectedDate } = useStore();
+  const { getActiveBaby, getChecklistItems, getCompletedItems, toggleCheckItem, selectedDate } = useStore(useShallow((s) => ({ getActiveBaby: s.getActiveBaby, getChecklistItems: s.getChecklistItems, getCompletedItems: s.getCompletedItems, toggleCheckItem: s.toggleCheckItem, selectedDate: s.selectedDate })));
   const baby = getActiveBaby();
   const items = getChecklistItems();
   const completed = getCompletedItems(selectedDate);

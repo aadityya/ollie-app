@@ -3,6 +3,7 @@ import {
   ResponsiveContainer, AreaChart, Area, LineChart, Line,
 } from 'recharts';
 import { useStore } from '../store/useStore';
+import { useShallow } from 'zustand/react/shallow';
 import {
   getLast7DaysSummaries, getAverage, getHigh, getLow, getDayLabel,
 } from '../utils/helpers';
@@ -14,7 +15,7 @@ const tooltipStyle = {
 };
 
 export function InsightsPage() {
-  const { getBabyLogs, getActiveBaby } = useStore();
+  const { getBabyLogs, getActiveBaby } = useStore(useShallow((s) => ({ getBabyLogs: s.getBabyLogs, getActiveBaby: s.getActiveBaby })));
   const logs = getBabyLogs();
   const baby = getActiveBaby();
   const summaries = getLast7DaysSummaries(logs);
