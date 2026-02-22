@@ -1,25 +1,25 @@
 @import "tailwindcss";
 
 @theme {
-  --color-cream: #FFF8F0;
-  --color-cream-dark: #FFF0E0;
-  --color-blush: #FFD6E0;
-  --color-blush-dark: #FFB8CC;
-  --color-lavender: #E8D5F5;
-  --color-lavender-dark: #D4B8EB;
-  --color-peach: #FFE0CC;
-  --color-peach-dark: #FFCBA8;
-  --color-mint: #D4F0E7;
-  --color-mint-dark: #B3E5D5;
-  --color-sky: #D6ECFA;
-  --color-sky-dark: #B8DCF5;
-  --color-sunshine: #FFF3CC;
-  --color-sunshine-dark: #FFE899;
-  --color-warm-brown: #5D4037;
-  --color-warm-brown-light: #8D6E63;
-  --color-warm-gray: #A1887F;
-  --color-rose: #F48FB1;
-  --color-rose-dark: #EC407A;
+  --color-cream: #FFFFFF;
+  --color-cream-dark: #FFF5EC;
+  --color-blush: #FF9EBF;
+  --color-blush-dark: #FF7AA8;
+  --color-lavender: #D9B3FF;
+  --color-lavender-dark: #C28BFF;
+  --color-peach: #FFD0A8;
+  --color-peach-dark: #FFB87A;
+  --color-mint: #A8F0D4;
+  --color-mint-dark: #7AE8BE;
+  --color-sky: #A8DAFF;
+  --color-sky-dark: #7AC4FF;
+  --color-sunshine: #FFF0A0;
+  --color-sunshine-dark: #FFE54A;
+  --color-warm-brown: #4A2C20;
+  --color-warm-brown-light: #7A5548;
+  --color-warm-gray: #8D7B73;
+  --color-rose: #FF6F9E;
+  --color-rose-dark: #FF1A6D;
 
   --font-family-sans: 'Nunito', sans-serif;
 }
