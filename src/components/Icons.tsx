@@ -282,6 +282,24 @@ export function GirlIcon({ size = 32, className = '' }: IconProps) {
   );
 }
 
+export function ChecklistIcon({ size = 32, className = '' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" className={className} fill="none">
+      <rect x="10" y="6" width="44" height="52" rx="8" fill="white" stroke="#D4F0E7" strokeWidth="2" />
+      {/* Check row 1 */}
+      <rect x="18" y="16" width="12" height="12" rx="3" fill="#D4F0E7" />
+      <path d="M21 22 L23 24.5 L28 19" stroke="#4CAF50" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <line x1="34" y1="22" x2="46" y2="22" stroke="#E8D5F5" strokeWidth="2" strokeLinecap="round" />
+      {/* Check row 2 */}
+      <rect x="18" y="32" width="12" height="12" rx="3" fill="#FFF3CC" />
+      <line x1="34" y1="38" x2="44" y2="38" stroke="#FFD6E0" strokeWidth="2" strokeLinecap="round" />
+      {/* Check row 3 */}
+      <rect x="18" y="48" width="12" height="12" rx="3" fill="#D6ECFA" />
+      <line x1="34" y1="54" x2="42" y2="54" stroke="#D6ECFA" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function StarIcon({ size = 16, className = '' }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" className={className} fill="none">

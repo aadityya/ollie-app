@@ -62,13 +62,15 @@ export interface Appointment {
 }
 
 export type BabyGender = 'boy' | 'girl';
+export type ThemeName = 'default' | 'pink' | 'blue' | 'green' | 'lavender' | 'mono';
 
 export interface BabyProfile {
   id: string;
   name: string;
   gender: BabyGender;
   dateOfBirth: string; // YYYY-MM-DD
-  avatarColor?: string;
+  theme: ThemeName;
+  checklistItems: string[];
 }
 
 export interface DailyLog {
@@ -99,4 +101,4 @@ export interface DailySummary {
 
 export type TrackingCategory = 'pee' | 'poop' | 'feeding' | 'diaper' | 'sleep' | 'colic' | 'note';
 
-export type ActivePage = 'tracker' | 'insights' | 'appointments' | 'profile';
+export type ActivePage = 'profile' | 'tracker' | 'checklist' | 'insights' | 'appointments';

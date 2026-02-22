@@ -1,5 +1,15 @@
-import { format, subDays, parseISO, differenceInMonths, differenceInYears } from 'date-fns';
+import { format, subDays, parseISO, differenceInMonths, differenceInYears, differenceInDays } from 'date-fns';
 import type { DailyLog, DailySummary } from '../types';
+
+export const DEFAULT_CHECKLIST_ITEMS = [
+  'Tummy Time',
+  'Outdoor Time',
+  'Reading Time',
+  'Bath Time',
+  'Vitamin Drops',
+  'Skin-to-Skin',
+  'Music / Singing',
+];
 
 export function formatTime(isoString: string): string {
   return format(parseISO(isoString), 'h:mm a');
@@ -26,6 +36,49 @@ export function formatBabyAge(dobString: string): string {
   if (years === 0) return `${months} month${months !== 1 ? 's' : ''} old`;
   if (months === 0) return `${years} year${years !== 1 ? 's' : ''} old`;
   return `${years}y ${months}m old`;
+}
+
+export function getDailyTip(dobString: string, babyName: string): string {
+  const dob = parseISO(dobString);
+  const now = new Date();
+  const ageInDays = differenceInDays(now, dob);
+
+  // Kindergarten: September 1 of the year baby turns 5
+  const kinderYear = dob.getFullYear() + 5;
+  const kinderDate = new Date(kinderYear, 8, 1); // Sept 1
+  const daysToKinder = differenceInDays(kinderDate, now);
+
+  // Use day-of-year as seed for tip rotation
+  const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000);
+  const name = babyName;
+
+  const tips: string[] = [
+    daysToKinder > 0
+      ? `🎓 ${daysToKinder.toLocaleString()} days until ${name}'s first day of Kindergarten!`
+      : `🎓 ${name} is getting ready for big adventures ahead!`,
+    `🌱 ${name} has been growing for ${ageInDays} amazing days. You're doing great, mama!`,
+    `💪 Tummy time builds strength! Every minute on the mat is progress for ${name}.`,
+    `📖 Reading to ${name} now builds pathways for a lifetime of learning.`,
+    `🎵 Babies who hear music develop stronger neural connections. Sing to ${name}!`,
+    `🤗 Your touch is ${name}'s favorite thing in the whole world.`,
+    `🌟 Every day, ${name} is learning something brand new. Celebrate the little wins!`,
+    `💤 Sleep helps tiny brains process everything they've learned today.`,
+    `🦋 Every milestone happens at its own perfect pace. ${name} is right on track.`,
+    `☀️ A few minutes of outdoor time does wonders for both you and ${name}.`,
+    `🫶 You know ${name} better than anyone in the world. Trust your instincts!`,
+    `🎨 Bright colors and new textures spark ${name}'s curiosity and development.`,
+    `👣 Those tiny feet will be running before you know it. Enjoy every step.`,
+    `🧸 Play is baby's work — every giggle means something new just clicked!`,
+    `🌈 ${name}'s brain is forming 1 million neural connections every second.`,
+    `💕 Skin-to-skin contact reduces stress for both baby and mama.`,
+    `🍼 Every feeding is a bonding moment. You're nourishing body and soul.`,
+    `🎉 Celebrate the small wins — they all add up to big milestones!`,
+    `🦁 Brave mama! Taking care of ${name} is truly heroic work.`,
+    `🌻 ${name} is growing exactly as they should. You're an amazing parent.`,
+    `🧠 Talking to ${name} — even about your day — boosts language development.`,
+  ];
+
+  return tips[dayOfYear % tips.length];
 }
 
 export function getDailySummary(log: DailyLog): DailySummary {

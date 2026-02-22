@@ -1,10 +1,24 @@
+import { useEffect } from 'react';
 import { useStore } from '../store/useStore';
-import { BabyFaceIcon, ChartIcon, CalendarIcon, ProfileIcon, BoyIcon, GirlIcon, StarIcon } from './Icons';
-import { formatBabyAge } from '../utils/helpers';
+import { BabyFaceIcon, ChartIcon, CalendarIcon, ProfileIcon, BoyIcon, GirlIcon, StarIcon, ChecklistIcon } from './Icons';
+import { formatBabyAge, getDailyTip } from '../utils/helpers';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const { activePage, setActivePage, getActiveBaby } = useStore();
   const baby = getActiveBaby();
+  const theme = baby?.theme || 'default';
+
+  // Apply theme to document root so CSS overrides cascade everywhere
+  useEffect(() => {
+    if (theme === 'default') {
+      delete document.documentElement.dataset.theme;
+    } else {
+      document.documentElement.dataset.theme = theme;
+    }
+    return () => { delete document.documentElement.dataset.theme; };
+  }, [theme]);
+
+  const tip = baby ? getDailyTip(baby.dateOfBirth, baby.name) : null;
 
   return (
     <div className="h-screen bg-cream flex flex-col max-w-lg mx-auto relative">
@@ -39,37 +53,50 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
+      {/* Tip of the Day */}
+      {tip && (
+        <div className="bg-sunshine/30 border-b border-sunshine/40 px-4 py-2">
+          <p className="text-xs text-warm-brown font-medium text-center leading-relaxed">{tip}</p>
+        </div>
+      )}
+
       {/* Content */}
       <main className="flex-1 overflow-y-auto pb-20">
         {children}
       </main>
 
-      {/* Bottom Navigation */}
+      {/* Bottom Navigation — Order: Profile, Tracker, Checklist, Insights, Appts */}
       <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-lg bg-white/90 backdrop-blur-sm border-t border-blush/20 z-10">
         <div className="flex">
+          <NavButton
+            active={activePage === 'profile'}
+            onClick={() => setActivePage('profile')}
+            label="Profile"
+            icon={<ProfileIcon size={18} />}
+          />
           <NavButton
             active={activePage === 'tracker'}
             onClick={() => setActivePage('tracker')}
             label="Tracker"
-            icon={<BabyFaceIcon size={20} />}
+            icon={<BabyFaceIcon size={18} />}
+          />
+          <NavButton
+            active={activePage === 'checklist'}
+            onClick={() => setActivePage('checklist')}
+            label="Check"
+            icon={<ChecklistIcon size={18} />}
           />
           <NavButton
             active={activePage === 'insights'}
             onClick={() => setActivePage('insights')}
             label="Insights"
-            icon={<ChartIcon size={20} />}
+            icon={<ChartIcon size={18} />}
           />
           <NavButton
             active={activePage === 'appointments'}
             onClick={() => setActivePage('appointments')}
             label="Appts"
-            icon={<CalendarIcon size={20} />}
-          />
-          <NavButton
-            active={activePage === 'profile'}
-            onClick={() => setActivePage('profile')}
-            label="Profile"
-            icon={<ProfileIcon size={20} />}
+            icon={<CalendarIcon size={18} />}
           />
         </div>
       </nav>
@@ -91,15 +118,15 @@ function NavButton({
   return (
     <button
       onClick={onClick}
-      className={`flex-1 flex flex-col items-center gap-0.5 py-2.5 transition-all duration-200 ${
+      className={`flex-1 flex flex-col items-center gap-0.5 py-2 transition-all duration-200 ${
         active
           ? 'text-rose-dark bg-blush/20'
           : 'text-warm-gray hover:text-warm-brown hover:bg-cream-dark/50'
       }`}
     >
       {icon}
-      <span className={`text-[10px] font-semibold ${active ? 'text-rose-dark' : ''}`}>{label}</span>
-      {active && <div className="w-6 h-0.5 bg-rose rounded-full mt-0.5" />}
+      <span className={`text-[9px] font-semibold ${active ? 'text-rose-dark' : ''}`}>{label}</span>
+      {active && <div className="w-5 h-0.5 bg-rose rounded-full mt-0.5" />}
     </button>
   );
 }

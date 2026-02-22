@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { format } from 'date-fns';
+import { DEFAULT_CHECKLIST_ITEMS } from '../utils/helpers';
 import type {
   DailyLog,
   PeeEntry,
@@ -13,6 +14,7 @@ import type {
   Appointment,
   BabyProfile,
   ActivePage,
+  ThemeName,
 } from '../types';
 
 function generateId(): string {
@@ -78,6 +80,12 @@ interface BabyStore {
   updateAppointment: (id: string, updates: Partial<Omit<Appointment, 'id'>>) => void;
   removeAppointment: (id: string) => void;
   toggleAppointmentComplete: (id: string) => void;
+
+  // Checklist completions: babyId -> date -> completed item labels
+  checklistCompletions: Record<string, Record<string, string[]>>;
+  toggleCheckItem: (item: string) => void;
+  getCompletedItems: (date: string) => string[];
+  getChecklistItems: () => string[];
 }
 
 export const useStore = create<BabyStore>()(
@@ -106,7 +114,12 @@ export const useStore = create<BabyStore>()(
 
         addProfile: (profile) => {
           const id = generateId();
-          const newProfile = { ...profile, id };
+          const newProfile: BabyProfile = {
+            ...profile,
+            id,
+            theme: profile.theme || 'default',
+            checklistItems: profile.checklistItems || [...DEFAULT_CHECKLIST_ITEMS],
+          };
           const profiles = [...get().profiles, newProfile];
           // If first baby, set as active
           const activeBabyId = get().activeBabyId || id;
@@ -132,7 +145,11 @@ export const useStore = create<BabyStore>()(
 
         getActiveBaby: () => {
           const { profiles, activeBabyId } = get();
-          return profiles.find((p) => p.id === activeBabyId) || null;
+          const baby = profiles.find((p) => p.id === activeBabyId) || null;
+          // Backward compat: ensure theme and checklistItems exist
+          if (baby && !baby.theme) return { ...baby, theme: 'default' as ThemeName, checklistItems: baby.checklistItems || [...DEFAULT_CHECKLIST_ITEMS] };
+          if (baby && !baby.checklistItems) return { ...baby, checklistItems: [...DEFAULT_CHECKLIST_ITEMS] };
+          return baby;
         },
 
         activePage: 'tracker',
@@ -339,6 +356,36 @@ export const useStore = create<BabyStore>()(
             a.id === id ? { ...a, completed: !a.completed } : a
           );
           set({ appointments });
+        },
+
+        // Checklist
+        checklistCompletions: {},
+
+        toggleCheckItem: (item: string) => {
+          const babyId = get().activeBabyId;
+          const date = get().selectedDate;
+          if (!babyId) return;
+          const completions = { ...get().checklistCompletions };
+          if (!completions[babyId]) completions[babyId] = {};
+          const dayItems = completions[babyId][date] || [];
+          if (dayItems.includes(item)) {
+            completions[babyId] = { ...completions[babyId], [date]: dayItems.filter((i) => i !== item) };
+          } else {
+            completions[babyId] = { ...completions[babyId], [date]: [...dayItems, item] };
+          }
+          set({ checklistCompletions: completions });
+        },
+
+        getCompletedItems: (date: string) => {
+          const babyId = get().activeBabyId;
+          if (!babyId) return [];
+          return get().checklistCompletions[babyId]?.[date] || [];
+        },
+
+        getChecklistItems: () => {
+          const baby = get().getActiveBaby();
+          if (!baby) return [];
+          return baby.checklistItems || [...DEFAULT_CHECKLIST_ITEMS];
         },
       };
     },
