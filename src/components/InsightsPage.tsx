@@ -54,7 +54,7 @@ export function InsightsPage() {
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
         <StatBadge icon={<DropletIcon size={20} />} label="Avg Pee" value={`${getAverage(peeValues)}`} color="bg-sky/20" />
         <StatBadge icon={<PoopIcon size={20} />} label="Avg Poop" value={`${getAverage(poopValues)}`} color="bg-peach/25" />
         <StatBadge icon={<BreastFeedIcon size={20} />} label="Avg Feeds" value={`${getAverage(feedingValues)}`} color="bg-lavender/20" />

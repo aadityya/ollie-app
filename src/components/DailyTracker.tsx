@@ -106,7 +106,7 @@ export function DailyTracker() {
 
       {/* Summary Cards */}
       <div className="px-4 mb-4">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <SummaryCard
             label="Feedings"
             value={`${day.feedings.length}`}
