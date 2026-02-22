@@ -4,7 +4,8 @@ import { useShallow } from 'zustand/react/shallow';
 import { formatTime } from '../utils/helpers';
 
 export function NotesSection() {
-  const { getDay, selectedDate, addNote, removeNote } = useStore(useShallow((s) => ({ getDay: s.getDay, selectedDate: s.selectedDate, addNote: s.addNote, removeNote: s.removeNote })));
+  const { getDay, selectedDate, addNote, removeNote, logs } = useStore(useShallow((s) => ({ getDay: s.getDay, selectedDate: s.selectedDate, addNote: s.addNote, removeNote: s.removeNote, logs: s.logs })));
+  void logs; // subscribed so NotesSection re-renders when log data changes
   const day = getDay(selectedDate);
   const [text, setText] = useState('');
 

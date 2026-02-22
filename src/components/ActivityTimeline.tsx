@@ -13,7 +13,8 @@ interface TimelineEntry {
 }
 
 export function ActivityTimeline() {
-  const { getDay, selectedDate, removePee, removePoop, removeFeeding, removeDiaperChange, removeSleep, removeColic } = useStore(useShallow((s) => ({ getDay: s.getDay, selectedDate: s.selectedDate, removePee: s.removePee, removePoop: s.removePoop, removeFeeding: s.removeFeeding, removeDiaperChange: s.removeDiaperChange, removeSleep: s.removeSleep, removeColic: s.removeColic })));
+  const { getDay, selectedDate, removePee, removePoop, removeFeeding, removeDiaperChange, removeSleep, removeColic, logs } = useStore(useShallow((s) => ({ getDay: s.getDay, selectedDate: s.selectedDate, removePee: s.removePee, removePoop: s.removePoop, removeFeeding: s.removeFeeding, removeDiaperChange: s.removeDiaperChange, removeSleep: s.removeSleep, removeColic: s.removeColic, logs: s.logs })));
+  void logs; // subscribed so ActivityTimeline re-renders when log data changes
   const day = getDay(selectedDate);
 
   const entries: TimelineEntry[] = [

@@ -9,7 +9,8 @@ interface SleepModalProps {
 }
 
 export function SleepModal({ open, onClose }: SleepModalProps) {
-  const { addSleep, endSleep, getDay, selectedDate } = useStore(useShallow((s) => ({ addSleep: s.addSleep, endSleep: s.endSleep, getDay: s.getDay, selectedDate: s.selectedDate })));
+  const { addSleep, endSleep, getDay, selectedDate, logs } = useStore(useShallow((s) => ({ addSleep: s.addSleep, endSleep: s.endSleep, getDay: s.getDay, selectedDate: s.selectedDate, logs: s.logs })));
+  void logs; // subscribed so SleepModal re-renders when log data changes
   const day = getDay(selectedDate);
   const activeSleep = day.sleeps.find((s) => !s.endTime);
 
@@ -46,10 +47,10 @@ export function SleepModal({ open, onClose }: SleepModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" onClick={onClose}>
       <div className="absolute inset-0 bg-warm-brown/20 backdrop-blur-sm" />
       <div
-        className="relative bg-white rounded-t-3xl w-full max-w-lg p-6 pb-8 shadow-xl"
+        className="relative bg-white rounded-3xl w-full max-w-md p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="w-10 h-1 bg-blush rounded-full mx-auto mb-4" />
