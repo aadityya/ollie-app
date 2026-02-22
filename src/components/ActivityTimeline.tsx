@@ -1,61 +1,48 @@
 import { useStore } from '../store/useStore';
 import { formatTime, formatDuration } from '../utils/helpers';
-import { DropletIcon, PoopIcon, BreastFeedIcon, DiaperIcon, MoonIcon } from './Icons';
+import { DropletIcon, PoopIcon, BreastFeedIcon, DiaperIcon, MoonIcon, ColicIcon } from './Icons';
 
 interface TimelineEntry {
   id: string;
   timestamp: string;
-  type: 'pee' | 'poop' | 'feeding' | 'diaper' | 'sleep';
+  type: 'pee' | 'poop' | 'feeding' | 'diaper' | 'sleep' | 'colic';
   label: string;
   detail?: string;
   onRemove: () => void;
 }
 
 export function ActivityTimeline() {
-  const { getDay, selectedDate, removePee, removePoop, removeFeeding, removeDiaperChange, removeSleep } = useStore();
+  const { getDay, selectedDate, removePee, removePoop, removeFeeding, removeDiaperChange, removeSleep, removeColic } = useStore();
   const day = getDay(selectedDate);
 
   const entries: TimelineEntry[] = [
     ...day.pee.map((e) => ({
-      id: e.id,
-      timestamp: e.timestamp,
-      type: 'pee' as const,
-      label: 'Pee',
+      id: e.id, timestamp: e.timestamp, type: 'pee' as const, label: 'Pee',
       onRemove: () => removePee(e.id),
     })),
     ...day.poop.map((e) => ({
-      id: e.id,
-      timestamp: e.timestamp,
-      type: 'poop' as const,
-      label: 'Poop',
+      id: e.id, timestamp: e.timestamp, type: 'poop' as const, label: 'Poop',
       detail: e.color ? `${e.color}` : undefined,
       onRemove: () => removePoop(e.id),
     })),
     ...day.feedings.map((e) => ({
-      id: e.id,
-      timestamp: e.timestamp,
-      type: 'feeding' as const,
-      label: 'Feeding',
+      id: e.id, timestamp: e.timestamp, type: 'feeding' as const, label: 'Feeding',
       detail: `${e.side} side, ${e.durationMinutes}min`,
       onRemove: () => removeFeeding(e.id),
     })),
     ...day.diaperChanges.map((e) => ({
-      id: e.id,
-      timestamp: e.timestamp,
-      type: 'diaper' as const,
-      label: 'Diaper',
-      detail: e.type,
-      onRemove: () => removeDiaperChange(e.id),
+      id: e.id, timestamp: e.timestamp, type: 'diaper' as const, label: 'Diaper',
+      detail: e.type, onRemove: () => removeDiaperChange(e.id),
     })),
     ...day.sleeps.map((e) => ({
-      id: e.id,
-      timestamp: e.startTime,
-      type: 'sleep' as const,
-      label: 'Sleep',
-      detail: e.endTime
-        ? formatDuration(e.durationMinutes || 0)
-        : 'sleeping...',
+      id: e.id, timestamp: e.startTime, type: 'sleep' as const, label: 'Sleep',
+      detail: e.endTime ? formatDuration(e.durationMinutes || 0) : 'sleeping...',
       onRemove: () => removeSleep(e.id),
+    })),
+    ...(day.colic || []).map((e) => ({
+      id: e.id, timestamp: e.timestamp, type: 'colic' as const, label: 'Colic',
+      detail: `level ${e.level}/5`,
+      onRemove: () => removeColic(e.id),
     })),
   ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
@@ -82,19 +69,13 @@ export function ActivityTimeline() {
 
 function TimelineItem({ entry }: { entry: TimelineEntry }) {
   const iconMap = {
-    pee: <DropletIcon size={24} />,
-    poop: <PoopIcon size={24} />,
-    feeding: <BreastFeedIcon size={24} />,
-    diaper: <DiaperIcon size={24} />,
-    sleep: <MoonIcon size={24} />,
+    pee: <DropletIcon size={24} />, poop: <PoopIcon size={24} />,
+    feeding: <BreastFeedIcon size={24} />, diaper: <DiaperIcon size={24} />,
+    sleep: <MoonIcon size={24} />, colic: <ColicIcon size={24} />,
   };
-
   const bgMap = {
-    pee: 'bg-sky/20',
-    poop: 'bg-peach/30',
-    feeding: 'bg-lavender/20',
-    diaper: 'bg-sky/15',
-    sleep: 'bg-sunshine/30',
+    pee: 'bg-sky/20', poop: 'bg-peach/30', feeding: 'bg-lavender/20',
+    diaper: 'bg-sky/15', sleep: 'bg-sunshine/30', colic: 'bg-blush/20',
   };
 
   return (
@@ -103,9 +84,7 @@ function TimelineItem({ entry }: { entry: TimelineEntry }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline gap-2">
           <span className="text-sm font-semibold text-warm-brown">{entry.label}</span>
-          {entry.detail && (
-            <span className="text-xs text-warm-gray capitalize">{entry.detail}</span>
-          )}
+          {entry.detail && <span className="text-xs text-warm-gray capitalize">{entry.detail}</span>}
         </div>
         <span className="text-xs text-warm-gray">{formatTime(entry.timestamp)}</span>
       </div>

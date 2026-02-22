@@ -1,4 +1,4 @@
-import { format, subDays, parseISO } from 'date-fns';
+import { format, subDays, parseISO, differenceInMonths, differenceInYears } from 'date-fns';
 import type { DailyLog, DailySummary } from '../types';
 
 export function formatTime(isoString: string): string {
@@ -12,6 +12,22 @@ export function formatDuration(minutes: number): string {
   return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
 }
 
+export function formatBabyAge(dobString: string): string {
+  const dob = parseISO(dobString);
+  const now = new Date();
+  const years = differenceInYears(now, dob);
+  const totalMonths = differenceInMonths(now, dob);
+  const months = totalMonths % 12;
+
+  if (years === 0 && months === 0) {
+    const days = Math.floor((now.getTime() - dob.getTime()) / (1000 * 60 * 60 * 24));
+    return `${days} day${days !== 1 ? 's' : ''} old`;
+  }
+  if (years === 0) return `${months} month${months !== 1 ? 's' : ''} old`;
+  if (months === 0) return `${years} year${years !== 1 ? 's' : ''} old`;
+  return `${years}y ${months}m old`;
+}
+
 export function getDailySummary(log: DailyLog): DailySummary {
   const totalFeedingMinutes = log.feedings.reduce((acc, f) => acc + f.durationMinutes, 0);
   const leftFeedingMinutes = log.feedings
@@ -21,6 +37,11 @@ export function getDailySummary(log: DailyLog): DailySummary {
     .filter((f) => f.side === 'right')
     .reduce((acc, f) => acc + f.durationMinutes, 0);
   const totalSleepMinutes = log.sleeps.reduce((acc, s) => acc + (s.durationMinutes || 0), 0);
+
+  const colicLevels = (log.colic || []).map((c) => c.level);
+  const avgColicLevel = colicLevels.length > 0
+    ? Math.round((colicLevels.reduce((a, b) => a + b, 0) / colicLevels.length) * 10) / 10
+    : 0;
 
   return {
     date: log.date,
@@ -33,6 +54,8 @@ export function getDailySummary(log: DailyLog): DailySummary {
     diaperChangeCount: log.diaperChanges.length,
     sleepCount: log.sleeps.length,
     totalSleepMinutes,
+    avgColicLevel,
+    colicCount: (log.colic || []).length,
   };
 }
 
@@ -49,6 +72,8 @@ export function getLast7DaysSummaries(
       feedings: [],
       diaperChanges: [],
       sleeps: [],
+      colic: [],
+      notes: [],
     };
     summaries.push(getDailySummary(log));
   }

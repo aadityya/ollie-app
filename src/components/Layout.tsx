@@ -1,8 +1,10 @@
 import { useStore } from '../store/useStore';
-import { BabyFaceIcon, ChartIcon, HeartIcon, StarIcon } from './Icons';
+import { BabyFaceIcon, ChartIcon, CalendarIcon, ProfileIcon, BoyIcon, GirlIcon, StarIcon } from './Icons';
+import { formatBabyAge } from '../utils/helpers';
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { activePage, setActivePage, babyName } = useStore();
+  const { activePage, setActivePage, getActiveBaby } = useStore();
+  const baby = getActiveBaby();
 
   return (
     <div className="h-screen bg-cream flex flex-col max-w-lg mx-auto relative">
@@ -10,18 +12,30 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <header className="bg-white/80 backdrop-blur-sm border-b border-blush/30 px-4 py-3 sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <BabyFaceIcon size={36} />
+            {baby ? (
+              baby.gender === 'boy' ? <BoyIcon size={36} /> : <GirlIcon size={36} />
+            ) : (
+              <BabyFaceIcon size={36} />
+            )}
             <div>
               <h1 className="text-lg font-bold text-warm-brown leading-tight">
-                {babyName}'s Day
+                {baby ? `${baby.name}'s Day` : 'Ollie'}
               </h1>
               <p className="text-xs text-warm-gray font-medium">
-                Every little moment matters
-                <StarIcon size={12} className="inline-block ml-1 -mt-0.5" />
+                {baby ? (
+                  <>
+                    {formatBabyAge(baby.dateOfBirth)}
+                    <StarIcon size={10} className="inline-block ml-1 -mt-0.5" />
+                  </>
+                ) : (
+                  <>
+                    Add a baby to get started
+                    <StarIcon size={10} className="inline-block ml-1 -mt-0.5" />
+                  </>
+                )}
               </p>
             </div>
           </div>
-          <HeartIcon size={28} />
         </div>
       </header>
 
@@ -37,13 +51,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
             active={activePage === 'tracker'}
             onClick={() => setActivePage('tracker')}
             label="Tracker"
-            icon={<BabyFaceIcon size={24} />}
+            icon={<BabyFaceIcon size={20} />}
           />
           <NavButton
             active={activePage === 'insights'}
             onClick={() => setActivePage('insights')}
             label="Insights"
-            icon={<ChartIcon size={24} />}
+            icon={<ChartIcon size={20} />}
+          />
+          <NavButton
+            active={activePage === 'appointments'}
+            onClick={() => setActivePage('appointments')}
+            label="Appts"
+            icon={<CalendarIcon size={20} />}
+          />
+          <NavButton
+            active={activePage === 'profile'}
+            onClick={() => setActivePage('profile')}
+            label="Profile"
+            icon={<ProfileIcon size={20} />}
           />
         </div>
       </nav>
@@ -72,8 +98,8 @@ function NavButton({
       }`}
     >
       {icon}
-      <span className={`text-xs font-semibold ${active ? 'text-rose-dark' : ''}`}>{label}</span>
-      {active && <div className="w-8 h-0.5 bg-rose rounded-full mt-0.5" />}
+      <span className={`text-[10px] font-semibold ${active ? 'text-rose-dark' : ''}`}>{label}</span>
+      {active && <div className="w-6 h-0.5 bg-rose rounded-full mt-0.5" />}
     </button>
   );
 }

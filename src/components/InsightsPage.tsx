@@ -1,38 +1,32 @@
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  AreaChart,
-  Area,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, AreaChart, Area, LineChart, Line,
 } from 'recharts';
 import { useStore } from '../store/useStore';
 import {
-  getLast7DaysSummaries,
-  getAverage,
-  getHigh,
-  getLow,
-  getDayLabel,
+  getLast7DaysSummaries, getAverage, getHigh, getLow, getDayLabel,
 } from '../utils/helpers';
-import { DropletIcon, PoopIcon, BreastFeedIcon, DiaperIcon, MoonIcon } from './Icons';
+import { DropletIcon, PoopIcon, BreastFeedIcon, DiaperIcon, MoonIcon, ColicIcon } from './Icons';
+
+const tooltipStyle = {
+  background: 'white', border: '1px solid #FFD6E0',
+  borderRadius: '12px', fontSize: '12px', fontFamily: 'Nunito',
+};
 
 export function InsightsPage() {
-  const logs = useStore((s) => s.logs);
+  const { getBabyLogs, getActiveBaby } = useStore();
+  const logs = getBabyLogs();
+  const baby = getActiveBaby();
   const summaries = getLast7DaysSummaries(logs);
 
   const chartData = summaries.map((s) => ({
     day: getDayLabel(s.date),
-    pee: s.peeCount,
-    poop: s.poopCount,
-    feedings: s.feedingCount,
-    feedingMins: s.totalFeedingMinutes,
-    leftMins: s.leftFeedingMinutes,
-    rightMins: s.rightFeedingMinutes,
+    pee: s.peeCount, poop: s.poopCount,
+    feedings: s.feedingCount, feedingMins: s.totalFeedingMinutes,
+    leftMins: s.leftFeedingMinutes, rightMins: s.rightFeedingMinutes,
     diapers: s.diaperChangeCount,
     sleepHrs: Math.round((s.totalSleepMinutes / 60) * 10) / 10,
+    colic: s.avgColicLevel,
   }));
 
   const peeValues = summaries.map((s) => s.peeCount);
@@ -41,6 +35,15 @@ export function InsightsPage() {
   const feedingMinValues = summaries.map((s) => s.totalFeedingMinutes);
   const diaperValues = summaries.map((s) => s.diaperChangeCount);
   const sleepValues = summaries.map((s) => s.totalSleepMinutes);
+  const colicValues = summaries.map((s) => s.avgColicLevel).filter((v) => v > 0);
+
+  if (!baby) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
+        <p className="text-warm-gray text-sm">Add a baby in Profile to see insights.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 py-4 space-y-4">
@@ -55,19 +58,25 @@ export function InsightsPage() {
         <StatBadge icon={<PoopIcon size={20} />} label="Avg Poop" value={`${getAverage(poopValues)}`} color="bg-peach/25" />
         <StatBadge icon={<BreastFeedIcon size={20} />} label="Avg Feeds" value={`${getAverage(feedingValues)}`} color="bg-lavender/20" />
         <StatBadge icon={<DiaperIcon size={20} />} label="Avg Diapers" value={`${getAverage(diaperValues)}`} color="bg-sky/15" />
-        <StatBadge
-          icon={<MoonIcon size={20} />}
-          label="Avg Sleep"
-          value={`${Math.round(getAverage(sleepValues) / 60 * 10) / 10}h`}
-          color="bg-sunshine/20"
-        />
-        <StatBadge
-          icon={<BreastFeedIcon size={20} />}
-          label="Avg Feed Time"
-          value={`${getAverage(feedingMinValues)}m`}
-          color="bg-lavender/15"
-        />
+        <StatBadge icon={<MoonIcon size={20} />} label="Avg Sleep" value={`${Math.round(getAverage(sleepValues) / 60 * 10) / 10}h`} color="bg-sunshine/20" />
+        <StatBadge icon={<ColicIcon size={20} />} label="Avg Colic" value={colicValues.length > 0 ? `${getAverage(colicValues)}/5` : '—'} color="bg-blush/20" />
       </div>
+
+      {/* Colic Chart */}
+      <ChartCard title="Colic / Crankiness" subtitle="Average daily level (1-5)">
+        <ResponsiveContainer width="100%" height={180}>
+          <LineChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#FFE0CC" vertical={false} />
+            <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#8D6E63' }} axisLine={false} tickLine={false} />
+            <YAxis domain={[0, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: '#8D6E63' }} axisLine={false} tickLine={false} width={24} />
+            <Tooltip contentStyle={tooltipStyle} />
+            <Line type="monotone" dataKey="colic" stroke="#F48FB1" strokeWidth={2.5} dot={{ fill: '#F48FB1', r: 4 }} name="Colic Level" connectNulls />
+          </LineChart>
+        </ResponsiveContainer>
+        {colicValues.length > 0 && (
+          <HighLowRow label="Colic" high={getHigh(colicValues)} low={getLow(colicValues)} avg={getAverage(colicValues)} />
+        )}
+      </ChartCard>
 
       {/* Pee & Poop Chart */}
       <ChartCard title="Pee & Poop" subtitle="Daily counts">
@@ -76,15 +85,7 @@ export function InsightsPage() {
             <CartesianGrid strokeDasharray="3 3" stroke="#FFE0CC" vertical={false} />
             <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#8D6E63' }} axisLine={false} tickLine={false} />
             <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#8D6E63' }} axisLine={false} tickLine={false} width={24} />
-            <Tooltip
-              contentStyle={{
-                background: 'white',
-                border: '1px solid #FFD6E0',
-                borderRadius: '12px',
-                fontSize: '12px',
-                fontFamily: 'Nunito',
-              }}
-            />
+            <Tooltip contentStyle={tooltipStyle} />
             <Bar dataKey="pee" fill="#B8DCF5" radius={[4, 4, 0, 0]} name="Pee" />
             <Bar dataKey="poop" fill="#A1887F" radius={[4, 4, 0, 0]} name="Poop" />
           </BarChart>
@@ -100,15 +101,7 @@ export function InsightsPage() {
             <CartesianGrid strokeDasharray="3 3" stroke="#FFE0CC" vertical={false} />
             <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#8D6E63' }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 11, fill: '#8D6E63' }} axisLine={false} tickLine={false} width={30} />
-            <Tooltip
-              contentStyle={{
-                background: 'white',
-                border: '1px solid #FFD6E0',
-                borderRadius: '12px',
-                fontSize: '12px',
-                fontFamily: 'Nunito',
-              }}
-            />
+            <Tooltip contentStyle={tooltipStyle} />
             <Bar dataKey="leftMins" fill="#D4B8EB" radius={[4, 4, 0, 0]} name="Left (min)" stackId="feed" />
             <Bar dataKey="rightMins" fill="#E8D5F5" radius={[4, 4, 0, 0]} name="Right (min)" stackId="feed" />
           </BarChart>
@@ -129,31 +122,11 @@ export function InsightsPage() {
             <CartesianGrid strokeDasharray="3 3" stroke="#FFE0CC" vertical={false} />
             <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#8D6E63' }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 11, fill: '#8D6E63' }} axisLine={false} tickLine={false} width={24} />
-            <Tooltip
-              contentStyle={{
-                background: 'white',
-                border: '1px solid #FFD6E0',
-                borderRadius: '12px',
-                fontSize: '12px',
-                fontFamily: 'Nunito',
-              }}
-            />
-            <Area
-              type="monotone"
-              dataKey="sleepHrs"
-              stroke="#D4B8EB"
-              strokeWidth={2.5}
-              fill="url(#sleepGrad)"
-              name="Sleep (hrs)"
-            />
+            <Tooltip contentStyle={tooltipStyle} />
+            <Area type="monotone" dataKey="sleepHrs" stroke="#D4B8EB" strokeWidth={2.5} fill="url(#sleepGrad)" name="Sleep (hrs)" />
           </AreaChart>
         </ResponsiveContainer>
-        <HighLowRow
-          label="Sleep hrs"
-          high={Math.round(getHigh(sleepValues) / 60 * 10) / 10}
-          low={Math.round(getLow(sleepValues) / 60 * 10) / 10}
-          avg={Math.round(getAverage(sleepValues) / 60 * 10) / 10}
-        />
+        <HighLowRow label="Sleep hrs" high={Math.round(getHigh(sleepValues) / 60 * 10) / 10} low={Math.round(getLow(sleepValues) / 60 * 10) / 10} avg={Math.round(getAverage(sleepValues) / 60 * 10) / 10} />
       </ChartCard>
 
       {/* Diaper Chart */}
@@ -163,15 +136,7 @@ export function InsightsPage() {
             <CartesianGrid strokeDasharray="3 3" stroke="#FFE0CC" vertical={false} />
             <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#8D6E63' }} axisLine={false} tickLine={false} />
             <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#8D6E63' }} axisLine={false} tickLine={false} width={24} />
-            <Tooltip
-              contentStyle={{
-                background: 'white',
-                border: '1px solid #FFD6E0',
-                borderRadius: '12px',
-                fontSize: '12px',
-                fontFamily: 'Nunito',
-              }}
-            />
+            <Tooltip contentStyle={tooltipStyle} />
             <Bar dataKey="diapers" fill="#B8DCF5" radius={[6, 6, 0, 0]} name="Changes" />
           </BarChart>
         </ResponsiveContainer>
@@ -185,15 +150,7 @@ export function InsightsPage() {
   );
 }
 
-function ChartCard({
-  title,
-  subtitle,
-  children,
-}: {
-  title: string;
-  subtitle: string;
-  children: React.ReactNode;
-}) {
+function ChartCard({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm border border-blush/10">
       <div className="mb-3">
@@ -205,17 +162,7 @@ function ChartCard({
   );
 }
 
-function StatBadge({
-  icon,
-  label,
-  value,
-  color,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  color: string;
-}) {
+function StatBadge({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: string; color: string }) {
   return (
     <div className={`${color} rounded-xl p-2.5 flex flex-col items-center gap-1`}>
       {icon}
@@ -225,17 +172,7 @@ function StatBadge({
   );
 }
 
-function HighLowRow({
-  label,
-  high,
-  low,
-  avg,
-}: {
-  label: string;
-  high: number;
-  low: number;
-  avg: number;
-}) {
+function HighLowRow({ label, high, low, avg }: { label: string; high: number; low: number; avg: number }) {
   return (
     <div className="flex items-center justify-between mt-2 pt-2 border-t border-blush/10 text-xs">
       <span className="text-warm-gray font-medium">{label}</span>

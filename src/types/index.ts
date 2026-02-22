@@ -37,6 +37,40 @@ export interface SleepEntry {
   note?: string;
 }
 
+export interface ColicEntry {
+  id: string;
+  timestamp: string;
+  level: 1 | 2 | 3 | 4 | 5;
+  note?: string;
+}
+
+export interface NoteEntry {
+  id: string;
+  timestamp: string;
+  text: string;
+}
+
+export interface Appointment {
+  id: string;
+  title: string;
+  date: string; // YYYY-MM-DD
+  time?: string; // HH:mm
+  doctor?: string;
+  location?: string;
+  note?: string;
+  completed: boolean;
+}
+
+export type BabyGender = 'boy' | 'girl';
+
+export interface BabyProfile {
+  id: string;
+  name: string;
+  gender: BabyGender;
+  dateOfBirth: string; // YYYY-MM-DD
+  avatarColor?: string;
+}
+
 export interface DailyLog {
   date: string; // YYYY-MM-DD
   pee: PeeEntry[];
@@ -44,6 +78,8 @@ export interface DailyLog {
   feedings: FeedingEntry[];
   diaperChanges: DiaperChangeEntry[];
   sleeps: SleepEntry[];
+  colic: ColicEntry[];
+  notes: NoteEntry[];
 }
 
 export interface DailySummary {
@@ -57,8 +93,10 @@ export interface DailySummary {
   diaperChangeCount: number;
   sleepCount: number;
   totalSleepMinutes: number;
+  avgColicLevel: number;
+  colicCount: number;
 }
 
-export type TrackingCategory = 'pee' | 'poop' | 'feeding' | 'diaper' | 'sleep';
+export type TrackingCategory = 'pee' | 'poop' | 'feeding' | 'diaper' | 'sleep' | 'colic' | 'note';
 
-export type ActivePage = 'tracker' | 'insights';
+export type ActivePage = 'tracker' | 'insights' | 'appointments' | 'profile';

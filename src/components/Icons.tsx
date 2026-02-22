@@ -175,6 +175,113 @@ export function ChartIcon({ size = 32, className = '' }: IconProps) {
   );
 }
 
+export function ColicIcon({ size = 32, className = '' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" className={className} fill="none">
+      {/* Face */}
+      <circle cx="32" cy="34" r="24" fill="#FFE0CC" />
+      {/* Frown eyebrows */}
+      <path d="M18 26 L26 30" stroke="#8D6E63" strokeWidth="2" strokeLinecap="round" />
+      <path d="M46 26 L38 30" stroke="#8D6E63" strokeWidth="2" strokeLinecap="round" />
+      {/* Squinting eyes */}
+      <path d="M22 34 Q25 32 28 34" stroke="#5D4037" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+      <path d="M36 34 Q39 32 42 34" stroke="#5D4037" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+      {/* Tears */}
+      <path d="M20 38 Q18 44 20 46" stroke="#B8DCF5" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+      <path d="M44 38 Q46 44 44 46" stroke="#B8DCF5" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+      {/* Open crying mouth */}
+      <ellipse cx="32" cy="46" rx="6" ry="4" fill="#E57373" opacity="0.7" />
+      {/* Cheeks red */}
+      <circle cx="18" cy="40" r="4" fill="#FF8A80" opacity="0.35" />
+      <circle cx="46" cy="40" r="4" fill="#FF8A80" opacity="0.35" />
+    </svg>
+  );
+}
+
+export function NoteIcon({ size = 32, className = '' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" className={className} fill="none">
+      <rect x="12" y="8" width="40" height="48" rx="6" fill="white" stroke="#E8D5F5" strokeWidth="2" />
+      <line x1="20" y1="22" x2="44" y2="22" stroke="#FFD6E0" strokeWidth="2" strokeLinecap="round" />
+      <line x1="20" y1="30" x2="40" y2="30" stroke="#E8D5F5" strokeWidth="2" strokeLinecap="round" />
+      <line x1="20" y1="38" x2="36" y2="38" stroke="#D6ECFA" strokeWidth="2" strokeLinecap="round" />
+      <line x1="20" y1="46" x2="32" y2="46" stroke="#D4F0E7" strokeWidth="2" strokeLinecap="round" />
+      {/* Pencil */}
+      <path d="M44 44 L50 38 L54 42 L48 48Z" fill="#FFE899" stroke="#FFD54F" strokeWidth="1" />
+      <path d="M44 44 L42 50 L48 48" fill="#8D6E63" />
+    </svg>
+  );
+}
+
+export function CalendarIcon({ size = 32, className = '' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" className={className} fill="none">
+      <rect x="8" y="14" width="48" height="42" rx="6" fill="white" stroke="#FFD6E0" strokeWidth="2" />
+      <rect x="8" y="14" width="48" height="14" rx="6" fill="#FFD6E0" />
+      <line x1="22" y1="8" x2="22" y2="20" stroke="#F48FB1" strokeWidth="3" strokeLinecap="round" />
+      <line x1="42" y1="8" x2="42" y2="20" stroke="#F48FB1" strokeWidth="3" strokeLinecap="round" />
+      {/* Date dots */}
+      <circle cx="20" cy="38" r="3" fill="#E8D5F5" />
+      <circle cx="32" cy="38" r="3" fill="#D6ECFA" />
+      <circle cx="44" cy="38" r="3" fill="#D4F0E7" />
+      <circle cx="20" cy="48" r="3" fill="#FFE0CC" />
+      <circle cx="32" cy="48" r="3" fill="#FFD6E0" />
+    </svg>
+  );
+}
+
+export function ProfileIcon({ size = 32, className = '' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" className={className} fill="none">
+      <circle cx="32" cy="24" r="14" fill="#FFE0CC" />
+      <path d="M12 56 C12 42, 22 36, 32 36 C42 36, 52 42, 52 56" fill="#E8D5F5" />
+      {/* Eyes */}
+      <circle cx="26" cy="24" r="2" fill="#5D4037" />
+      <circle cx="38" cy="24" r="2" fill="#5D4037" />
+      {/* Smile */}
+      <path d="M27 30 Q32 34 37 30" stroke="#5D4037" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+    </svg>
+  );
+}
+
+export function BoyIcon({ size = 32, className = '' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" className={className} fill="none">
+      <circle cx="32" cy="34" r="24" fill="#D6ECFA" />
+      <circle cx="24" cy="34" r="3" fill="#5D4037" />
+      <circle cx="40" cy="34" r="3" fill="#5D4037" />
+      <circle cx="25" cy="33" r="1" fill="white" />
+      <circle cx="41" cy="33" r="1" fill="white" />
+      <circle cx="18" cy="40" r="4" fill="#B8DCF5" opacity="0.5" />
+      <circle cx="46" cy="40" r="4" fill="#B8DCF5" opacity="0.5" />
+      <path d="M26 42 Q32 48 38 42" stroke="#5D4037" strokeWidth="2" strokeLinecap="round" fill="none" />
+      {/* Little cap */}
+      <path d="M14 24 Q32 6 50 24" fill="#90CAF9" />
+      <rect x="28" y="10" width="8" height="4" rx="2" fill="#64B5F6" />
+    </svg>
+  );
+}
+
+export function GirlIcon({ size = 32, className = '' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" className={className} fill="none">
+      <circle cx="32" cy="34" r="24" fill="#FFE0CC" />
+      <circle cx="24" cy="34" r="3" fill="#5D4037" />
+      <circle cx="40" cy="34" r="3" fill="#5D4037" />
+      <circle cx="25" cy="33" r="1" fill="white" />
+      <circle cx="41" cy="33" r="1" fill="white" />
+      <circle cx="18" cy="40" r="4" fill="#FFB8CC" opacity="0.5" />
+      <circle cx="46" cy="40" r="4" fill="#FFB8CC" opacity="0.5" />
+      <path d="M26 42 Q32 48 38 42" stroke="#5D4037" strokeWidth="2" strokeLinecap="round" fill="none" />
+      {/* Bow */}
+      <path d="M42 14 C48 10, 54 14, 48 18 C54 22, 48 26, 42 22" fill="#FFB8CC" />
+      <circle cx="42" cy="18" r="2.5" fill="#F48FB1" />
+      {/* Hair */}
+      <path d="M12 30 C10 16, 22 8, 32 10 C42 8, 54 16, 52 30" stroke="#8D6E63" strokeWidth="3" fill="none" />
+    </svg>
+  );
+}
+
 export function StarIcon({ size = 16, className = '' }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" className={className} fill="none">
