@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useStore } from '../store/useStore';
 import { useShallow } from 'zustand/react/shallow';
 import { BabyFaceIcon, ChartIcon, CalendarIcon, ProfileIcon, StarIcon, ChecklistIcon, OllieBadge } from './Icons';
-import { formatBabyAge, getDailyTip } from '../utils/helpers';
+import { formatBabyAge } from '../utils/helpers';
 import { APP_VERSION } from '../version';
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -21,7 +21,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
     return () => { delete document.documentElement.dataset.theme; };
   }, [theme]);
 
-  const tip = baby ? getDailyTip(baby.dateOfBirth, baby.name) : null;
 
   return (
     <div className="h-screen bg-cream flex flex-col sm:flex-row max-w-[880px] mx-auto relative">
@@ -82,12 +81,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        {/* Tip of the Day */}
-        {tip && (
-          <div className="bg-sunshine/30 border-b border-sunshine/40 px-4 py-1.5">
-            <p className="text-[11px] text-warm-brown font-medium text-center leading-snug">{tip}</p>
-          </div>
-        )}
+        {/* Banner */}
+        <div className="bg-sunshine/30 border-b border-sunshine/40 px-4 py-1.5">
+          <p className="text-[11px] text-warm-brown font-medium text-center leading-snug">The Baby Activity Tracker</p>
+        </div>
 
         {/* Content */}
         <main className="flex-1 overflow-y-auto pb-20 sm:pb-4">
