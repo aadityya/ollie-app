@@ -7,6 +7,7 @@ import { FeedingModal } from './FeedingModal';
 import { SleepModal } from './SleepModal';
 import { DiaperModal } from './DiaperModal';
 import { ColicModal } from './ColicModal';
+import { MedicationModal } from './MedicationModal';
 import { ActivityTimeline } from './ActivityTimeline';
 import { NotesSection } from './NotesSection';
 import { DropletIcon, PoopIcon, BreastFeedIcon, DiaperIcon, MoonIcon, ColicIcon } from './Icons';
@@ -21,6 +22,8 @@ export function DailyTracker() {
   const [sleepOpen, setSleepOpen] = useState(false);
   const [diaperOpen, setDiaperOpen] = useState(false);
   const [colicOpen, setColicOpen] = useState(false);
+  const [medicationOpen, setMedicationOpen] = useState(false);
+  const [showMore, setShowMore] = useState(false);
 
   const activeSleep = day.sleeps.find((s) => !s.endTime);
 
@@ -36,7 +39,8 @@ export function DailyTracker() {
   }
 
   const totalEntries = day.pee.length + day.poop.length + day.feedings.length
-    + day.diaperChanges.length + day.sleeps.length + (day.colic || []).length;
+    + day.diaperChanges.length + day.sleeps.length + (day.colic || []).length
+    + (day.medications || []).length + (day.customActivities || []).length;
 
   return (
     <div>
@@ -101,6 +105,36 @@ export function DailyTracker() {
               borderColor="border-blush/30"
               onClick={() => setColicOpen(true)}
             />
+          </div>
+
+          {/* More section */}
+          <div className="mt-3">
+            <button
+              onClick={() => setShowMore(!showMore)}
+              className="flex items-center gap-1.5 text-xs font-semibold text-warm-gray hover:text-warm-brown transition-colors"
+            >
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className={`transition-transform ${showMore ? 'rotate-180' : ''}`}>
+                <path d="M3 5L6 8L9 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              More
+              {(day.medications || []).length > 0 && (
+                <span className="text-[10px] text-warm-gray bg-cream px-1.5 py-0.5 rounded-full">
+                  {(day.medications || []).length}
+                </span>
+              )}
+            </button>
+            {showMore && (
+              <div className="grid grid-cols-3 gap-1.5 mt-2">
+                <QuickLogButton
+                  icon={<MedicationIcon size={24} />}
+                  label="Meds"
+                  count={(day.medications || []).length}
+                  bgColor="bg-lavender/15"
+                  borderColor="border-lavender/25"
+                  onClick={() => setMedicationOpen(true)}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -170,7 +204,19 @@ export function DailyTracker() {
       <SleepModal open={sleepOpen} onClose={() => setSleepOpen(false)} />
       <DiaperModal open={diaperOpen} onClose={() => setDiaperOpen(false)} />
       <ColicModal open={colicOpen} onClose={() => setColicOpen(false)} />
+      <MedicationModal open={medicationOpen} onClose={() => setMedicationOpen(false)} />
     </div>
+  );
+}
+
+function MedicationIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
+      <rect x="18" y="8" width="28" height="48" rx="8" fill="#E8D5F5" stroke="#D9B3FF" strokeWidth="2"/>
+      <rect x="18" y="28" width="28" height="28" rx="0" fill="#D9B3FF" opacity="0.4"/>
+      <line x1="32" y1="18" x2="32" y2="26" stroke="#A855F7" strokeWidth="3" strokeLinecap="round"/>
+      <line x1="28" y1="22" x2="36" y2="22" stroke="#A855F7" strokeWidth="3" strokeLinecap="round"/>
+    </svg>
   );
 }
 

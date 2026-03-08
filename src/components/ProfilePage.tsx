@@ -4,6 +4,7 @@ import { useStore } from '../store/useStore';
 import { useShallow } from 'zustand/react/shallow';
 import { BoyIcon, GirlIcon } from './Icons';
 import { formatBabyAge, DEFAULT_CHECKLIST_ITEMS } from '../utils/helpers';
+import { APP_VERSION } from '../version';
 import type { BabyGender, ThemeName } from '../types';
 
 const THEMES: { name: ThemeName; label: string; swatch: string; border: string }[] = [
@@ -24,6 +25,7 @@ export function ProfilePage() {
   const [gender, setGender] = useState<BabyGender>('boy');
   const [dob, setDob] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [newCheckItem, setNewCheckItem] = useState('');
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const resetForm = () => {
     setName('');
@@ -38,7 +40,7 @@ export function ProfilePage() {
     if (editId) {
       updateProfile(editId, { name: name.trim(), gender, dateOfBirth: dob });
     } else {
-      addProfile({ name: name.trim(), gender, dateOfBirth: dob, theme: 'default', checklistItems: [...DEFAULT_CHECKLIST_ITEMS] });
+      addProfile({ name: name.trim(), gender, dateOfBirth: dob, theme: 'mono', checklistItems: [...DEFAULT_CHECKLIST_ITEMS] });
     }
     resetForm();
   };
@@ -51,6 +53,15 @@ export function ProfilePage() {
     setGender(profile.gender);
     setDob(profile.dateOfBirth);
     setShowForm(true);
+  };
+
+  const handleDelete = (id: string) => {
+    if (confirmDeleteId === id) {
+      removeProfile(id);
+      setConfirmDeleteId(null);
+    } else {
+      setConfirmDeleteId(id);
+    }
   };
 
   const handleThemeChange = (theme: ThemeName) => {
@@ -77,8 +88,8 @@ export function ProfilePage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold text-warm-brown">Baby Profiles</h2>
-          <p className="text-xs text-warm-gray">Manage your little ones</p>
+          <h2 className="text-lg font-bold text-warm-brown">Settings</h2>
+          <p className="text-xs text-warm-gray">Manage profiles & preferences</p>
         </div>
         {!showForm && (
           <button
@@ -202,18 +213,32 @@ export function ProfilePage() {
                       <path d="M11 2L14 5L5 14H2V11L11 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </button>
-                  {profiles.length > 1 && (
-                    <button
-                      onClick={(e) => { e.stopPropagation(); removeProfile(profile.id); }}
-                      className="w-8 h-8 rounded-full bg-cream flex items-center justify-center text-warm-gray hover:text-rose-dark hover:bg-blush/30 transition-colors"
-                    >
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleDelete(profile.id); }}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                      confirmDeleteId === profile.id
+                        ? 'bg-rose/20 text-rose-dark'
+                        : 'bg-cream text-warm-gray hover:text-rose-dark hover:bg-blush/30'
+                    }`}
+                    title={confirmDeleteId === profile.id ? 'Click again to confirm' : 'Delete profile'}
+                  >
+                    {confirmDeleteId === profile.id ? (
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 8L7 11L12 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    ) : (
                       <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                         <path d="M4 4L10 10M10 4L4 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
                       </svg>
-                    </button>
-                  )}
+                    )}
+                  </button>
                 </div>
               </div>
+              {confirmDeleteId === profile.id && (
+                <p className="text-[10px] text-rose-dark mt-2 text-right font-medium">
+                  Click again to confirm deletion
+                </p>
+              )}
             </div>
           ))}
         </div>
@@ -237,7 +262,7 @@ export function ProfilePage() {
           <p className="text-xs text-warm-gray mb-3">Pick a color palette for {activeBaby.name}</p>
           <div className="flex gap-3 justify-center">
             {THEMES.map((t) => {
-              const isActive = (activeBaby.theme || 'default') === t.name;
+              const isActive = (activeBaby.theme || 'mono') === t.name;
               return (
                 <button
                   key={t.name}
@@ -305,6 +330,11 @@ export function ProfilePage() {
           </div>
         </div>
       )}
+
+      {/* Version */}
+      <div className="text-center pt-2 pb-4">
+        <span className="text-[10px] text-warm-gray/50 font-mono font-medium">v{APP_VERSION}</span>
+      </div>
     </div>
   );
 }

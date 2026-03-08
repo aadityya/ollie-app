@@ -11,6 +11,8 @@ import type {
   SleepEntry,
   ColicEntry,
   NoteEntry,
+  MedicationEntry,
+  CustomActivityEntry,
   Appointment,
   BabyProfile,
   ActivePage,
@@ -26,7 +28,7 @@ function todayKey(): string {
 }
 
 function emptyDay(date: string): DailyLog {
-  return { date, pee: [], poop: [], feedings: [], diaperChanges: [], sleeps: [], colic: [], notes: [] };
+  return { date, pee: [], poop: [], feedings: [], diaperChanges: [], sleeps: [], colic: [], notes: [], medications: [], customActivities: [] };
 }
 
 interface BabyStore {
@@ -74,6 +76,12 @@ interface BabyStore {
   addNote: (text: string) => void;
   removeNote: (id: string) => void;
 
+  addMedication: (name: string, note?: string, timestamp?: string) => void;
+  removeMedication: (id: string) => void;
+
+  addCustomActivity: (name: string) => void;
+  removeCustomActivity: (id: string) => void;
+
   // Appointments keyed by babyId
   appointments: Record<string, Appointment[]>;
   addAppointment: (entry: Omit<Appointment, 'id' | 'completed'>) => void;
@@ -117,7 +125,7 @@ export const useStore = create<BabyStore>()(
           const newProfile: BabyProfile = {
             ...profile,
             id,
-            theme: profile.theme || 'default',
+            theme: profile.theme || 'mono',
             checklistItems: profile.checklistItems || [...DEFAULT_CHECKLIST_ITEMS],
           };
           const profiles = [...get().profiles, newProfile];
@@ -147,7 +155,7 @@ export const useStore = create<BabyStore>()(
           const { profiles, activeBabyId } = get();
           const baby = profiles.find((p) => p.id === activeBabyId) || null;
           // Backward compat: ensure theme and checklistItems exist
-          if (baby && !baby.theme) return { ...baby, theme: 'default' as ThemeName, checklistItems: baby.checklistItems || [...DEFAULT_CHECKLIST_ITEMS] };
+          if (baby && !baby.theme) return { ...baby, theme: 'mono' as ThemeName, checklistItems: baby.checklistItems || [...DEFAULT_CHECKLIST_ITEMS] };
           if (baby && !baby.checklistItems) return { ...baby, checklistItems: [...DEFAULT_CHECKLIST_ITEMS] };
           return baby;
         },
@@ -217,7 +225,8 @@ export const useStore = create<BabyStore>()(
           const { babyId, date } = getBabyDate();
           if (!babyId) return;
           const logs = ensureDay(get().logs, babyId, date);
-          const newEntry: FeedingEntry = { id: generateId(), timestamp: new Date().toISOString(), ...entry };
+          const { timestamp: ts, ...rest } = entry as any;
+          const newEntry: FeedingEntry = { id: generateId(), timestamp: ts || new Date().toISOString(), ...rest };
           logs[babyId][date].feedings = [...logs[babyId][date].feedings, newEntry];
           set({ logs });
         },
@@ -315,6 +324,40 @@ export const useStore = create<BabyStore>()(
           set({ logs });
         },
 
+        addMedication: (name, note, timestamp) => {
+          const { babyId, date } = getBabyDate();
+          if (!babyId) return;
+          const logs = ensureDay(get().logs, babyId, date);
+          const entry: MedicationEntry = { id: generateId(), timestamp: timestamp || new Date().toISOString(), name, note };
+          logs[babyId][date].medications = [...(logs[babyId][date].medications || []), entry];
+          set({ logs });
+        },
+
+        removeMedication: (id) => {
+          const { babyId, date } = getBabyDate();
+          if (!babyId) return;
+          const logs = ensureDay(get().logs, babyId, date);
+          logs[babyId][date].medications = (logs[babyId][date].medications || []).filter((e) => e.id !== id);
+          set({ logs });
+        },
+
+        addCustomActivity: (name) => {
+          const { babyId, date } = getBabyDate();
+          if (!babyId) return;
+          const logs = ensureDay(get().logs, babyId, date);
+          const entry: CustomActivityEntry = { id: generateId(), timestamp: new Date().toISOString(), name };
+          logs[babyId][date].customActivities = [...(logs[babyId][date].customActivities || []), entry];
+          set({ logs });
+        },
+
+        removeCustomActivity: (id) => {
+          const { babyId, date } = getBabyDate();
+          if (!babyId) return;
+          const logs = ensureDay(get().logs, babyId, date);
+          logs[babyId][date].customActivities = (logs[babyId][date].customActivities || []).filter((e) => e.id !== id);
+          set({ logs });
+        },
+
         appointments: {},
 
         addAppointment: (entry) => {
@@ -370,10 +413,18 @@ export const useStore = create<BabyStore>()(
           const dayItems = completions[babyId][date] || [];
           if (dayItems.includes(item)) {
             completions[babyId] = { ...completions[babyId], [date]: dayItems.filter((i) => i !== item) };
+            // Remove from timeline
+            const logs = ensureDay(get().logs, babyId, date);
+            logs[babyId][date].customActivities = (logs[babyId][date].customActivities || []).filter((e) => e.name !== item);
+            set({ checklistCompletions: completions, logs });
           } else {
             completions[babyId] = { ...completions[babyId], [date]: [...dayItems, item] };
+            // Add to timeline
+            const logs = ensureDay(get().logs, babyId, date);
+            const entry: CustomActivityEntry = { id: generateId(), timestamp: new Date().toISOString(), name: item };
+            logs[babyId][date].customActivities = [...(logs[babyId][date].customActivities || []), entry];
+            set({ checklistCompletions: completions, logs });
           }
-          set({ checklistCompletions: completions });
         },
 
         getCompletedItems: (date: string) => {

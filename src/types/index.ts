@@ -50,6 +50,19 @@ export interface NoteEntry {
   text: string;
 }
 
+export interface MedicationEntry {
+  id: string;
+  timestamp: string;
+  name: string;
+  note?: string;
+}
+
+export interface CustomActivityEntry {
+  id: string;
+  timestamp: string;
+  name: string;
+}
+
 export interface Appointment {
   id: string;
   title: string;
@@ -82,6 +95,8 @@ export interface DailyLog {
   sleeps: SleepEntry[];
   colic: ColicEntry[];
   notes: NoteEntry[];
+  medications: MedicationEntry[];
+  customActivities: CustomActivityEntry[];
 }
 
 export interface DailySummary {
@@ -99,6 +114,6 @@ export interface DailySummary {
   colicCount: number;
 }
 
-export type TrackingCategory = 'pee' | 'poop' | 'feeding' | 'diaper' | 'sleep' | 'colic' | 'note';
+export type TrackingCategory = 'pee' | 'poop' | 'feeding' | 'diaper' | 'sleep' | 'colic' | 'note' | 'medication' | 'customActivity';
 
 export type ActivePage = 'profile' | 'tracker' | 'checklist' | 'insights' | 'appointments';

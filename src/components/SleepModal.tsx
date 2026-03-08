@@ -8,6 +8,17 @@ interface SleepModalProps {
   onClose: () => void;
 }
 
+function nowTimeString(): string {
+  const now = new Date();
+  return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+}
+
+function oneHourAgoTimeString(): string {
+  const now = new Date();
+  now.setHours(now.getHours() - 1);
+  return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+}
+
 export function SleepModal({ open, onClose }: SleepModalProps) {
   const { addSleep, endSleep, getDay, selectedDate, logs } = useStore(useShallow((s) => ({ addSleep: s.addSleep, endSleep: s.endSleep, getDay: s.getDay, selectedDate: s.selectedDate, logs: s.logs })));
   void logs; // subscribed so SleepModal re-renders when log data changes
@@ -17,6 +28,9 @@ export function SleepModal({ open, onClose }: SleepModalProps) {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(30);
   const [mode, setMode] = useState<'timer' | 'manual'>('timer');
+  const [manualMode, setManualMode] = useState<'duration' | 'startStop'>('duration');
+  const [manualStartTime, setManualStartTime] = useState(oneHourAgoTimeString);
+  const [manualEndTime, setManualEndTime] = useState(nowTimeString);
 
   if (!open) return null;
 
@@ -33,15 +47,31 @@ export function SleepModal({ open, onClose }: SleepModalProps) {
   };
 
   const handleManualSleep = () => {
-    const totalMinutes = hours * 60 + minutes;
-    if (totalMinutes > 0) {
+    if (manualMode === 'startStop') {
+      const [sh, sm] = manualStartTime.split(':').map(Number);
+      const [eh, em] = manualEndTime.split(':').map(Number);
+      const startTime = new Date();
+      startTime.setHours(sh, sm, 0, 0);
       const endTime = new Date();
-      const startTime = new Date(endTime.getTime() - totalMinutes * 60000);
+      endTime.setHours(eh, em, 0, 0);
+      if (endTime <= startTime) return;
+      const durationMinutes = Math.round((endTime.getTime() - startTime.getTime()) / 60000);
       addSleep({
         startTime: startTime.toISOString(),
         endTime: endTime.toISOString(),
-        durationMinutes: totalMinutes,
+        durationMinutes,
       });
+    } else {
+      const totalMinutes = hours * 60 + minutes;
+      if (totalMinutes > 0) {
+        const endTime = new Date();
+        const startTime = new Date(endTime.getTime() - totalMinutes * 60000);
+        addSleep({
+          startTime: startTime.toISOString(),
+          endTime: endTime.toISOString(),
+          durationMinutes: totalMinutes,
+        });
+      }
     }
     onClose();
   };
@@ -124,34 +154,86 @@ export function SleepModal({ open, onClose }: SleepModalProps) {
               </div>
             ) : (
               <div className="mb-6">
-                <label className="text-sm font-semibold text-warm-brown mb-3 block">
-                  How long did baby sleep?
-                </label>
-                <div className="flex gap-4 items-center justify-center mb-4">
-                  <div className="flex flex-col items-center">
-                    <input
-                      type="number"
-                      min={0}
-                      max={23}
-                      value={hours}
-                      onChange={(e) => setHours(Math.max(0, Number(e.target.value)))}
-                      className="w-16 text-center text-2xl font-bold text-warm-brown bg-cream rounded-xl py-2 border-2 border-transparent focus:border-lavender-dark outline-none"
-                    />
-                    <span className="text-xs text-warm-gray mt-1">hours</span>
-                  </div>
-                  <span className="text-2xl font-bold text-warm-gray">:</span>
-                  <div className="flex flex-col items-center">
-                    <input
-                      type="number"
-                      min={0}
-                      max={59}
-                      value={minutes}
-                      onChange={(e) => setMinutes(Math.max(0, Math.min(59, Number(e.target.value))))}
-                      className="w-16 text-center text-2xl font-bold text-warm-brown bg-cream rounded-xl py-2 border-2 border-transparent focus:border-lavender-dark outline-none"
-                    />
-                    <span className="text-xs text-warm-gray mt-1">minutes</span>
-                  </div>
+                {/* Manual sub-mode toggle */}
+                <div className="flex gap-2 mb-4 bg-cream/60 rounded-lg p-0.5">
+                  <button
+                    onClick={() => setManualMode('duration')}
+                    className={`flex-1 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                      manualMode === 'duration' ? 'bg-white text-warm-brown shadow-sm' : 'text-warm-gray'
+                    }`}
+                  >
+                    Duration
+                  </button>
+                  <button
+                    onClick={() => setManualMode('startStop')}
+                    className={`flex-1 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                      manualMode === 'startStop' ? 'bg-white text-warm-brown shadow-sm' : 'text-warm-gray'
+                    }`}
+                  >
+                    Start / Stop Time
+                  </button>
                 </div>
+
+                {manualMode === 'duration' ? (
+                  <>
+                    <label className="text-sm font-semibold text-warm-brown mb-3 block">
+                      How long did baby sleep?
+                    </label>
+                    <div className="flex gap-4 items-center justify-center mb-4">
+                      <div className="flex flex-col items-center">
+                        <input
+                          type="number"
+                          min={0}
+                          max={23}
+                          value={hours}
+                          onChange={(e) => setHours(Math.max(0, Number(e.target.value)))}
+                          className="w-16 text-center text-2xl font-bold text-warm-brown bg-cream rounded-xl py-2 border-2 border-transparent focus:border-lavender-dark outline-none"
+                        />
+                        <span className="text-xs text-warm-gray mt-1">hours</span>
+                      </div>
+                      <span className="text-2xl font-bold text-warm-gray">:</span>
+                      <div className="flex flex-col items-center">
+                        <input
+                          type="number"
+                          min={0}
+                          max={59}
+                          value={minutes}
+                          onChange={(e) => setMinutes(Math.max(0, Math.min(59, Number(e.target.value))))}
+                          className="w-16 text-center text-2xl font-bold text-warm-brown bg-cream rounded-xl py-2 border-2 border-transparent focus:border-lavender-dark outline-none"
+                        />
+                        <span className="text-xs text-warm-gray mt-1">minutes</span>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <label className="text-sm font-semibold text-warm-brown mb-3 block">
+                      Enter start and stop times
+                    </label>
+                    <div className="flex gap-3 items-center mb-4">
+                      <div className="flex-1">
+                        <label className="text-xs text-warm-gray mb-1 block">Start</label>
+                        <input
+                          type="time"
+                          value={manualStartTime}
+                          onChange={(e) => setManualStartTime(e.target.value)}
+                          className="w-full text-center text-lg font-bold text-warm-brown bg-cream rounded-xl py-2 border-2 border-transparent focus:border-lavender-dark outline-none"
+                        />
+                      </div>
+                      <span className="text-warm-gray font-bold mt-4">to</span>
+                      <div className="flex-1">
+                        <label className="text-xs text-warm-gray mb-1 block">End</label>
+                        <input
+                          type="time"
+                          value={manualEndTime}
+                          onChange={(e) => setManualEndTime(e.target.value)}
+                          className="w-full text-center text-lg font-bold text-warm-brown bg-cream rounded-xl py-2 border-2 border-transparent focus:border-lavender-dark outline-none"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
                 <button
                   onClick={handleManualSleep}
                   className="w-full py-3 rounded-xl bg-lavender text-warm-brown font-semibold text-sm hover:bg-lavender-dark transition-colors shadow-md"

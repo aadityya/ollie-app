@@ -6,14 +6,34 @@ import { DropletIcon, PoopIcon, BreastFeedIcon, DiaperIcon, MoonIcon, ColicIcon 
 interface TimelineEntry {
   id: string;
   timestamp: string;
-  type: 'pee' | 'poop' | 'feeding' | 'diaper' | 'sleep' | 'colic';
+  type: 'pee' | 'poop' | 'feeding' | 'diaper' | 'sleep' | 'colic' | 'medication' | 'customActivity';
   label: string;
   detail?: string;
   onRemove: () => void;
 }
 
+function MedicationIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
+      <rect x="18" y="8" width="28" height="48" rx="8" fill="#E8D5F5" stroke="#D9B3FF" strokeWidth="2"/>
+      <rect x="18" y="28" width="28" height="28" rx="0" fill="#D9B3FF" opacity="0.4"/>
+      <line x1="32" y1="18" x2="32" y2="26" stroke="#A855F7" strokeWidth="3" strokeLinecap="round"/>
+      <line x1="28" y1="22" x2="36" y2="22" stroke="#A855F7" strokeWidth="3" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
+function CustomActivityIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
+      <circle cx="32" cy="32" r="24" fill="#D4F0E7" stroke="#7AE8BE" strokeWidth="2"/>
+      <path d="M24 32L30 38L40 26" stroke="#4CAF50" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
 export function ActivityTimeline() {
-  const { getDay, selectedDate, removePee, removePoop, removeFeeding, removeDiaperChange, removeSleep, removeColic, logs } = useStore(useShallow((s) => ({ getDay: s.getDay, selectedDate: s.selectedDate, removePee: s.removePee, removePoop: s.removePoop, removeFeeding: s.removeFeeding, removeDiaperChange: s.removeDiaperChange, removeSleep: s.removeSleep, removeColic: s.removeColic, logs: s.logs })));
+  const { getDay, selectedDate, removePee, removePoop, removeFeeding, removeDiaperChange, removeSleep, removeColic, removeMedication, removeCustomActivity, logs } = useStore(useShallow((s) => ({ getDay: s.getDay, selectedDate: s.selectedDate, removePee: s.removePee, removePoop: s.removePoop, removeFeeding: s.removeFeeding, removeDiaperChange: s.removeDiaperChange, removeSleep: s.removeSleep, removeColic: s.removeColic, removeMedication: s.removeMedication, removeCustomActivity: s.removeCustomActivity, logs: s.logs })));
   void logs; // subscribed so ActivityTimeline re-renders when log data changes
   const day = getDay(selectedDate);
 
@@ -46,6 +66,15 @@ export function ActivityTimeline() {
       detail: `level ${e.level}/5`,
       onRemove: () => removeColic(e.id),
     })),
+    ...(day.medications || []).map((e) => ({
+      id: e.id, timestamp: e.timestamp, type: 'medication' as const, label: 'Medication',
+      detail: e.name + (e.note ? ` - ${e.note}` : ''),
+      onRemove: () => removeMedication(e.id),
+    })),
+    ...(day.customActivities || []).map((e) => ({
+      id: e.id, timestamp: e.timestamp, type: 'customActivity' as const, label: e.name,
+      onRemove: () => removeCustomActivity(e.id),
+    })),
   ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
   if (entries.length === 0) {
@@ -70,14 +99,18 @@ export function ActivityTimeline() {
 }
 
 function TimelineItem({ entry }: { entry: TimelineEntry }) {
-  const iconMap = {
+  const iconMap: Record<string, React.ReactNode> = {
     pee: <DropletIcon size={24} />, poop: <PoopIcon size={24} />,
     feeding: <BreastFeedIcon size={24} />, diaper: <DiaperIcon size={24} />,
     sleep: <MoonIcon size={24} />, colic: <ColicIcon size={24} />,
+    medication: <MedicationIcon size={24} />,
+    customActivity: <CustomActivityIcon size={24} />,
   };
-  const bgMap = {
+  const bgMap: Record<string, string> = {
     pee: 'bg-sky/20', poop: 'bg-peach/30', feeding: 'bg-lavender/20',
     diaper: 'bg-sky/15', sleep: 'bg-sunshine/30', colic: 'bg-blush/20',
+    medication: 'bg-lavender/15',
+    customActivity: 'bg-mint/20',
   };
 
   return (

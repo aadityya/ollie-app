@@ -1,15 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useStore } from '../store/useStore';
 import { useShallow } from 'zustand/react/shallow';
 import { BabyFaceIcon, ChartIcon, CalendarIcon, ProfileIcon, StarIcon, ChecklistIcon, OllieBadge } from './Icons';
 import { formatBabyAge, getDailyTip } from '../utils/helpers';
-import { APP_VERSION } from '../version';
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { activePage, setActivePage, getActiveBaby, profiles, activeBabyId } = useStore(useShallow((s) => ({ activePage: s.activePage, setActivePage: s.setActivePage, getActiveBaby: s.getActiveBaby, profiles: s.profiles, activeBabyId: s.activeBabyId })));
-  void profiles; void activeBabyId; // subscribed so Layout re-renders on profile/theme changes
+  const { activePage, setActivePage, getActiveBaby, profiles, activeBabyId, setActiveBaby } = useStore(useShallow((s) => ({ activePage: s.activePage, setActivePage: s.setActivePage, getActiveBaby: s.getActiveBaby, profiles: s.profiles, activeBabyId: s.activeBabyId, setActiveBaby: s.setActiveBaby })));
   const baby = getActiveBaby();
-  const theme = baby?.theme || 'default';
+  const theme = baby?.theme || 'mono';
+  const [showBabySwitcher, setShowBabySwitcher] = useState(false);
 
   // Apply theme to document root so CSS overrides cascade everywhere
   useEffect(() => {
@@ -23,6 +22,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   const tip = baby ? getDailyTip(baby.dateOfBirth, baby.name) : null;
 
+  const handleSwitchBaby = (id: string) => {
+    setActiveBaby(id);
+    setShowBabySwitcher(false);
+  };
+
   return (
     <div className="h-screen bg-cream flex flex-col sm:flex-row max-w-[880px] mx-auto relative">
       {/* Left Sidebar Navigation (desktop) / Bottom Nav (mobile) */}
@@ -31,7 +35,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <NavButton
             active={activePage === 'profile'}
             onClick={() => setActivePage('profile')}
-            label="Profile"
+            label="Settings"
             icon={<ProfileIcon size={18} />}
           />
           <NavButton
@@ -69,7 +73,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <div className="flex items-center gap-2">
               <OllieBadge size={32} />
               <h1 className="text-base font-bold text-warm-brown leading-tight">
-                {baby ? `${baby.name}'s Day` : 'Ollie'}
+                {baby ? `How's ${baby.name}'s day?` : 'Ollie'}
               </h1>
               {baby && (
                 <span className="text-xs text-warm-gray font-medium flex items-center gap-1">
@@ -78,7 +82,46 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 </span>
               )}
             </div>
-            <span className="text-[10px] text-warm-gray/50 font-mono font-medium">v{APP_VERSION}</span>
+            {/* Baby Switcher */}
+            {profiles.length > 0 && (
+              <div className="relative">
+                <button
+                  onClick={() => setShowBabySwitcher(!showBabySwitcher)}
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-cream border border-blush/20 hover:border-blush/40 transition-colors"
+                >
+                  <span className="text-xs font-semibold text-warm-brown truncate max-w-[80px]">
+                    {baby?.name || 'Select'}
+                  </span>
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className={`transition-transform ${showBabySwitcher ? 'rotate-180' : ''}`}>
+                    <path d="M2 4L5 7L8 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+                {showBabySwitcher && (
+                  <>
+                    <div className="fixed inset-0 z-20" onClick={() => setShowBabySwitcher(false)} />
+                    <div className="absolute right-0 top-full mt-1 bg-white rounded-xl shadow-lg border border-blush/20 py-1 min-w-[160px] z-30">
+                      {profiles.map((p) => (
+                        <button
+                          key={p.id}
+                          onClick={() => handleSwitchBaby(p.id)}
+                          className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 hover:bg-cream transition-colors ${
+                            p.id === activeBabyId ? 'text-rose-dark font-bold' : 'text-warm-brown'
+                          }`}
+                        >
+                          <span className="text-xs">{p.gender === 'boy' ? '👦' : '👧'}</span>
+                          <span className="truncate">{p.name}</span>
+                          {p.id === activeBabyId && (
+                            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" className="ml-auto shrink-0">
+                              <path d="M4 8L7 11L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </header>
 

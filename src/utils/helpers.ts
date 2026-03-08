@@ -127,6 +127,8 @@ export function getLast7DaysSummaries(
       sleeps: [],
       colic: [],
       notes: [],
+      medications: [],
+      customActivities: [],
     };
     summaries.push(getDailySummary(log));
   }
